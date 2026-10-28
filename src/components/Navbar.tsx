@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Play,
+  Pause,
   ListOrdered,
   BookMarked,
   BarChart3,
@@ -10,6 +11,8 @@ import {
   VolumeX,
   HelpCircle,
   X,
+  Clock,
+  ArrowRight,
 } from 'lucide-react';
 import { usePractice } from '../context/usePractice';
 
@@ -26,8 +29,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   onTabChange,
   onOpenSettings,
 }) => {
-  const { settings, updateSettings } = usePractice();
+  const {
+    settings,
+    updateSettings,
+    isTimerRunning,
+    timerSeconds,
+    activeItem,
+    startTimer,
+    pauseTimer,
+  } = usePractice();
   const [showTabHelp, setShowTabHelp] = useState(false);
+
+  const formatTimer = (secs: number) => {
+    const mins = Math.floor(secs / 60);
+    const rSecs = secs % 60;
+    return `${mins.toString().padStart(2, '0')}:${rSecs.toString().padStart(2, '0')}`;
+  };
 
   const getHelpContent = (tab: ActiveTab) => {
     switch (tab) {
@@ -62,7 +79,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const helpInfo = getHelpContent(currentTab);
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800">
+    <header className="sticky top-0 z-40 bg-slate-950/95 backdrop-blur-md border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 gap-2">
           {/* Brand Logo & Title */}
@@ -93,6 +110,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               <span>Practice</span>
+              {/* Show dot on Practice tab if timer is actively running */}
+              {isTimerRunning && currentTab !== 'practice' && (
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-0.5" />
+              )}
             </button>
 
             <button
@@ -193,16 +214,55 @@ export const Navbar: React.FC<NavbarProps> = ({
               key={tab}
               type="button"
               onClick={() => onTabChange(tab)}
-              className={`px-3 py-1.5 rounded-lg capitalize whitespace-nowrap transition-colors ${
+              className={`px-3 py-1.5 rounded-lg capitalize whitespace-nowrap transition-colors flex items-center gap-1 ${
                 currentTab === tab
                   ? 'bg-amber-500 text-slate-950 font-black'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              {tab}
+              <span>{tab}</span>
+              {tab === 'practice' && isTimerRunning && currentTab !== 'practice' && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              )}
             </button>
           ))}
         </div>
+
+        {/* Floating Persistent Mini-Timer Bar when user is on another tab */}
+        {currentTab !== 'practice' && (isTimerRunning || timerSeconds > 0) && activeItem && (
+          <div className="py-1.5 px-3 my-1 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-between text-xs animate-in slide-in-from-top-1">
+            <div className="flex items-center gap-2 truncate">
+              <span className={`w-2 h-2 rounded-full ${isTimerRunning ? 'bg-emerald-400 animate-ping' : 'bg-slate-500'}`} />
+              <Clock className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+              <span className="font-mono font-bold text-amber-400 flex-shrink-0">
+                {formatTimer(timerSeconds)}
+              </span>
+              <span className="text-slate-300 truncate max-w-xs hidden sm:inline">
+                • {activeItem.name}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                type="button"
+                onClick={isTimerRunning ? pauseTimer : startTimer}
+                className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-[11px] font-bold"
+              >
+                {isTimerRunning ? <Pause className="w-3 h-3 inline" /> : <Play className="w-3 h-3 inline" />}
+                <span className="ml-1">{isTimerRunning ? 'Pause' : 'Resume'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onTabChange('practice')}
+                className="flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:underline"
+              >
+                <span>Back to Player</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Floating Info Popover (Section 1 ⓘ Icon) */}

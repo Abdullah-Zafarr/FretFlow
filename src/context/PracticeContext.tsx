@@ -99,50 +99,91 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [timerSeconds, setTimerSeconds] = useState<number>(activeItemEntryMinutes * 60);
   const [timerTotalSeconds, setTimerTotalSeconds] = useState<number>(activeItemEntryMinutes * 60);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
+  const targetEndTimeRef = React.useRef<number | null>(null);
 
-  // Sync timer when active item changes or entry minutes change
+  // Sync timer ONLY when active item changes (preserving running state across re-renders)
+  const prevActiveItemIdRef = React.useRef<string | null>(activeItemId);
   useEffect(() => {
-    const totalSecs = activeItemEntryMinutes * 60;
-    setTimerTotalSeconds(totalSecs);
-    setTimerSeconds(totalSecs);
-    setIsTimerRunning(false);
+    if (prevActiveItemIdRef.current !== activeItemId) {
+      prevActiveItemIdRef.current = activeItemId;
+      const totalSecs = activeItemEntryMinutes * 60;
+      setTimerTotalSeconds(totalSecs);
+      setTimerSeconds(totalSecs);
+      setIsTimerRunning(false);
+      targetEndTimeRef.current = null;
+    }
   }, [activeItemId, activeItemEntryMinutes]);
 
-  // Timer countdown effect
+  // Wall-clock timestamp timer (Date.now())
+  // Completely immune to browser tab switching, background throttling, and tab switches
   useEffect(() => {
     if (!isTimerRunning) return;
 
-    const interval = window.setInterval(() => {
-      setTimerSeconds((prev) => {
-        if (prev <= 1) {
-          window.clearInterval(interval);
-          setIsTimerRunning(false);
-          // Sound alarm
-          if (settings.soundEnabled) {
-            soundEngine.playAlarm(settings.alarmTone);
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    const tick = () => {
+      if (!targetEndTimeRef.current) return;
+      const now = Date.now();
+      const remainingMs = targetEndTimeRef.current - now;
+      const remainingSecs = Math.max(0, Math.ceil(remainingMs / 1000));
 
-    return () => window.clearInterval(interval);
+      setTimerSeconds(remainingSecs);
+
+      if (remainingSecs <= 0) {
+        setIsTimerRunning(false);
+        targetEndTimeRef.current = null;
+        if (settings.soundEnabled) {
+          soundEngine.playAlarm(settings.alarmTone);
+        }
+      }
+    };
+
+    tick();
+    const interval = window.setInterval(tick, 250);
+
+    const handleSync = () => {
+      tick();
+    };
+
+    document.addEventListener('visibilitychange', handleSync);
+    window.addEventListener('focus', handleSync);
+
+    return () => {
+      window.clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleSync);
+      window.removeEventListener('focus', handleSync);
+    };
   }, [isTimerRunning, settings.soundEnabled, settings.alarmTone]);
 
   const startTimer = useCallback(() => {
     soundEngine.unlockAudio();
+    targetEndTimeRef.current = Date.now() + timerSeconds * 1000;
     setIsTimerRunning(true);
-  }, []);
+  }, [timerSeconds]);
 
   const pauseTimer = useCallback(() => {
+    if (targetEndTimeRef.current) {
+      const remainingMs = targetEndTimeRef.current - Date.now();
+      const remainingSecs = Math.max(0, Math.ceil(remainingMs / 1000));
+      setTimerSeconds(remainingSecs);
+      targetEndTimeRef.current = null;
+    }
     setIsTimerRunning(false);
   }, []);
 
   const resetTimer = useCallback(() => {
     setIsTimerRunning(false);
-    setTimerSeconds(activeItemEntryMinutes * 60);
+    targetEndTimeRef.current = null;
+    const totalSecs = activeItemEntryMinutes * 60;
+    setTimerTotalSeconds(totalSecs);
+    setTimerSeconds(totalSecs);
   }, [activeItemEntryMinutes]);
+
+  const setTimerSecondsCustom = useCallback((secs: number) => {
+    const clamped = Math.max(0, secs);
+    setTimerSeconds(clamped);
+    if (isTimerRunning) {
+      targetEndTimeRef.current = Date.now() + clamped * 1000;
+    }
+  }, [isTimerRunning]);
 
   const selectActiveItem = useCallback((itemId: string) => {
     setActiveItemId(itemId);
@@ -410,7 +451,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     startTimer,
     pauseTimer,
     resetTimer,
-    setTimerSeconds,
+    setTimerSeconds: setTimerSecondsCustom,
     selectActiveItem,
     markItemDone,
     repeatActiveItem,
