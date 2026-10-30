@@ -117,6 +117,70 @@ class AudioEngine {
     }
   }
 
+  /**
+   * Synthesize tactile analog switch / pedal mechanical clicks
+   * Gives physical tangible feedback when triggering hardware controls.
+   */
+  public playMechanicalClick(type: 'toggle' | 'stomp' | 'rotary' = 'toggle') {
+    try {
+      const ctx = this.getContext();
+      const now = ctx.currentTime;
+
+      if (type === 'stomp') {
+        // Heavy 3PDT true-bypass foot-switch clunk
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(45, now + 0.05);
+
+        gain.gain.setValueAtTime(0.6, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.07);
+        return;
+      }
+
+      if (type === 'rotary') {
+        // Soft analog detent tick for rotary dials
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(950, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.015);
+
+        gain.gain.setValueAtTime(0.22, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.018);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.02);
+        return;
+      }
+
+      // Default 'toggle' - crisp vintage toggle switch contact
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(1700, now);
+      osc.frequency.exponentialRampToValueAtTime(350, now + 0.022);
+
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.03);
+    } catch {
+      // AudioContext silenced
+    }
+  }
+
   public getCurrentTime(): number {
     return this.getContext().currentTime;
   }
