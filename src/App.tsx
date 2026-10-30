@@ -21,16 +21,16 @@ export const AppContent: React.FC = () => {
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
       const formatted = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      document.title = `⏱ ${formatted} • ${activeItem.name}`;
+      document.title = `[${formatted}] ${activeItem.name} — JustinGuitar`;
     } else if (timerSeconds === 0 && activeItem) {
-      document.title = `🔔 Done! • ${activeItem.name}`;
+      document.title = `[COMPLETED] ${activeItem.name} — JustinGuitar`;
     } else {
-      document.title = 'JustinGuitar - My Practice Assistant';
+      document.title = 'JustinGuitar — Practice Assistant';
     }
   }, [isTimerRunning, timerSeconds, activeItem]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-amber-500 selection:text-slate-950">
+    <div className="min-h-screen bg-[#141210] text-[#f2efe9] flex flex-col font-sans selection:bg-amber-600 selection:text-white">
       {/* Top Navigation */}
       <Navbar
         currentTab={currentTab}
@@ -57,11 +57,16 @@ export const AppContent: React.FC = () => {
         </div>
       </main>
 
-      {/* Bottom Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/80 py-4 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-wrap items-center justify-between gap-2">
-          <span>🎸 JustinGuitar "My Practice Assistant" (Web Edition)</span>
-          <span>Deliberate Practice • Built for Guitarists</span>
+      {/* Bottom Footer - Analog Studio Signature */}
+      <footer className="border-t border-[#29241e] bg-[#100e0c] py-4 text-xs text-[#8c8273]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-amber-600 inline-block"></span>
+            <span className="font-semibold text-[#b8ad9e]">JustinGuitar Methodology</span>
+            <span className="text-[#595248]">|</span>
+            <span>Deliberate Practice Workbench</span>
+          </div>
+          <span className="font-mono text-[11px] text-[#70675a]">ANALOG AUDIO & PRACTICE TOOLS • NO CLOUD LOCK-IN</span>
         </div>
       </footer>
 

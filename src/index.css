@@ -1,27 +1,156 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --font-serif: 'Fraunces', Georgia, Cambria, 'Times New Roman', serif;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    
+    --color-chassis: #141210;
+    --color-panel: #1d1a16;
+    --color-panel-light: #28241f;
+    --color-border: #383129;
+    --color-border-bright: #4f463b;
+    --color-amber-jewel: #f59e0b;
+    --color-tube-glow: #ea580c;
+  }
+
   body {
-    @apply antialiased bg-slate-950 text-slate-100 min-h-screen selection:bg-amber-500 selection:text-slate-950;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #141210;
+    color: #f3efe9;
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
+  }
+
+  h1, h2, h3, .font-serif-heading {
+    font-family: var(--font-serif);
+    letter-spacing: -0.015em;
+  }
+
+  code, kbd, samp, pre, .font-telemetry {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
   }
 }
 
-/* Custom scrollbar */
+/* Custom warm analog scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: #141210;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
-  border-radius: 9999px;
+  background: #383129;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.4);
+  background: #4f463b;
+}
+
+/* Fender-Style Faceted Jewel Pilot Lamp */
+.jewel-lamp {
+  position: relative;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  display: inline-block;
+  flex-shrink: 0;
+  transition: all 0.25s ease-in-out;
+}
+
+.jewel-lamp-off {
+  background: radial-gradient(circle at 35% 35%, #78350f 0%, #451a03 70%, #1f0b02 100%);
+  border: 1.5px solid #2e1a0b;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.jewel-lamp-active {
+  background: radial-gradient(circle at 35% 35%, #fef08a 0%, #f59e0b 45%, #b45309 85%, #78350f 100%);
+  border: 1.5px solid #d97706;
+  box-shadow:
+    0 0 10px 2px rgba(245, 158, 11, 0.75),
+    0 0 24px 6px rgba(234, 88, 12, 0.4),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+  animation: jewel-pulse 3s ease-in-out infinite;
+}
+
+@keyframes jewel-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 10px 2px rgba(245, 158, 11, 0.75),
+      0 0 24px 6px rgba(234, 88, 12, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    box-shadow:
+      0 0 16px 4px rgba(245, 158, 11, 0.95),
+      0 0 32px 10px rgba(234, 88, 12, 0.55),
+      inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  }
+}
+
+/* Heavy Mechanical Stompbox Button */
+.stomp-button {
+  position: relative;
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  user-select: none;
+}
+
+.stomp-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #0d0c0a, 0 3px 6px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Recessed Equipment Bay (Studio Outboard Gear) */
+.chassis-bay {
+  background-color: #171512;
+  border: 1px solid #332d26;
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Raised Amplifier Faceplate */
+.chassis-panel {
+  background-color: #1c1916;
+  border: 1px solid #332d26;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Studio Masking Tape Strip (Console Label) */
+.tape-strip {
+  background-color: #fbf7ee;
+  color: #211e19;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35);
+  border-left: 2px dashed #e2d9c4;
+  border-right: 2px dashed #e2d9c4;
+}
+
+/* Physical Screw Head Accent */
+.screw-head {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 35%, #4a4339 0%, #29241e 80%);
+  border: 1px solid #1a1714;
+  position: relative;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.screw-head::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background-color: #120f0c;
+  transform: translateY(-50%) rotate(38deg);
 }
