@@ -12,46 +12,61 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
 
   if (!chord) {
     return (
-      <div className="p-3 text-center text-xs text-slate-400">
-        No diagram available for <span className="font-bold text-amber-400">{chordName}</span>
+      <div className="p-3 text-center text-xs font-mono text-[#8c8070] bg-[#1a1714] border border-[#383129] rounded-lg">
+        No chart indexed for <span className="font-bold text-amber-500">{chordName}</span>
       </div>
     );
   }
 
   // Dimensions
   const isSm = size === 'sm';
-  const width = isSm ? 120 : 160;
-  const height = isSm ? 150 : 200;
+  const width = isSm ? 130 : 170;
+  const height = isSm ? 160 : 210;
   const numStrings = 6;
   const numFrets = 4;
-  const marginX = isSm ? 20 : 26;
-  const marginTop = isSm ? 32 : 42;
+  const marginX = isSm ? 22 : 28;
+  const marginTop = isSm ? 34 : 44;
   const stringSpacing = (width - marginX * 2) / (numStrings - 1);
-  const fretSpacing = (height - marginTop - 20) / numFrets;
+  const fretSpacing = (height - marginTop - 22) / numFrets;
 
   const baseFret = chord.baseFret || 1;
 
   return (
-    <div className="flex flex-col items-center bg-slate-900/95 border border-slate-700/80 p-3 rounded-xl shadow-2xl backdrop-blur-md">
-      <div className="text-sm font-bold text-amber-400 mb-1 tracking-wide">{chord.name}</div>
+    <div className="flex flex-col items-center bg-[#fdfbf7] text-[#1c1814] border-2 border-[#d6cbba] p-3.5 rounded-xl shadow-[0_8px_24px_rgba(0,0,0,0.7)] select-none">
+      {/* Lithograph Header */}
+      <div className="text-base font-serif font-black text-[#1c1814] tracking-tight mb-1">
+        {chord.name}
+      </div>
+
       <svg width={width} height={height} className="overflow-visible">
-        {/* Top nut or base fret indicator */}
+        {/* Fretboard background vellum */}
+        <rect
+          x={marginX - 4}
+          y={marginTop}
+          width={width - marginX * 2 + 8}
+          height={numFrets * fretSpacing}
+          fill="#f7f2e7"
+          rx={2}
+        />
+
+        {/* Top bone nut or starting fret number */}
         {baseFret === 1 ? (
           <line
             x1={marginX - 2}
             y1={marginTop}
             x2={width - marginX + 2}
             y2={marginTop}
-            stroke="#f59e0b"
+            stroke="#26201a"
             strokeWidth="5"
-            strokeLinecap="round"
+            strokeLinecap="square"
           />
         ) : (
           <text
             x={marginX - 14}
             y={marginTop + fretSpacing / 2 + 5}
-            fill="#94a3b8"
+            fill="#54493d"
             fontSize="11"
+            fontFamily="monospace"
             fontWeight="bold"
             textAnchor="middle"
           >
@@ -59,7 +74,7 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
           </text>
         )}
 
-        {/* Fret lines */}
+        {/* Nickel Fret Lines */}
         {Array.from({ length: numFrets + 1 }).map((_, i) => (
           <line
             key={`fret-${i}`}
@@ -67,12 +82,12 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
             y1={marginTop + i * fretSpacing}
             x2={width - marginX}
             y2={marginTop + i * fretSpacing}
-            stroke="#475569"
+            stroke="#8c7e6c"
             strokeWidth={i === 0 && baseFret === 1 ? 0 : 1.5}
           />
         ))}
 
-        {/* String lines (low E on left, high e on right) */}
+        {/* Bronze Guitar Strings (gauged: low E thickest) */}
         {Array.from({ length: numStrings }).map((_, i) => (
           <line
             key={`string-${i}`}
@@ -80,8 +95,8 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
             y1={marginTop}
             x2={marginX + i * stringSpacing}
             y2={marginTop + numFrets * fretSpacing}
-            stroke={i < 3 ? '#94a3b8' : '#cbd5e1'}
-            strokeWidth={2.5 - i * 0.25}
+            stroke={i < 3 ? '#5c4e3f' : '#8c7d6c'}
+            strokeWidth={2.6 - i * 0.28}
           />
         ))}
 
@@ -89,12 +104,11 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
         {chord.barre && (
           <rect
             x={marginX + chord.barre.fromString * stringSpacing - 6}
-            y={marginTop + (chord.barre.fret - (baseFret - 1) - 0.5) * fretSpacing - 6}
+            y={marginTop + (chord.barre.fret - (baseFret - 1) - 0.5) * fretSpacing - 7}
             width={(chord.barre.toString - chord.barre.fromString) * stringSpacing + 12}
-            height={12}
-            rx={6}
-            fill="#f59e0b"
-            opacity={0.85}
+            height={14}
+            rx={7}
+            fill="#b45309"
           />
         )}
 
@@ -108,8 +122,9 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
                 key={`mute-${strIdx}`}
                 x={x}
                 y={marginTop - 8}
-                fill="#ef4444"
+                fill="#b91c1c"
                 fontSize="12"
+                fontFamily="sans-serif"
                 fontWeight="900"
                 textAnchor="middle"
               >
@@ -124,8 +139,8 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
                 key={`open-${strIdx}`}
                 cx={x}
                 cy={marginTop - 11}
-                r={4}
-                stroke="#10b981"
+                r={4.5}
+                stroke="#15803d"
                 strokeWidth={2}
                 fill="none"
               />
@@ -139,13 +154,21 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
 
           return (
             <g key={`dot-${strIdx}`}>
-              <circle cx={x} cy={y} r={isSm ? 6 : 8} fill="#f59e0b" />
+              <circle
+                cx={x}
+                cy={y}
+                r={isSm ? 6.5 : 8.5}
+                fill="#1c1814"
+                stroke="#d97706"
+                strokeWidth={1.5}
+              />
               {fingerNum && fingerNum > 0 && (
                 <text
                   x={x}
                   y={y + 3.5}
-                  fill="#0f172a"
-                  fontSize="10"
+                  fill="#fdfbf7"
+                  fontSize={isSm ? '9' : '10'}
+                  fontFamily="monospace"
                   fontWeight="bold"
                   textAnchor="middle"
                 >
@@ -156,7 +179,9 @@ export const ChordDiagram: React.FC<ChordDiagramProps> = ({ chordName, size = 'm
           );
         })}
       </svg>
-      <div className="text-[10px] text-slate-400 mt-1 flex justify-between w-full px-2">
+
+      {/* String Tuning Footer */}
+      <div className="text-[10px] font-mono font-bold text-[#695d4e] mt-1.5 flex justify-between w-full px-2 border-t border-[#e2d8c5] pt-1">
         <span>E</span>
         <span>A</span>
         <span>D</span>

@@ -92,8 +92,8 @@ export const ChordText: React.FC<ChordTextProps> = ({ text, className = '', chor
               key={idx}
               type="button"
               onClick={(e) => handleChordClick(token.text, e)}
-              className={`inline-flex items-center px-1.5 py-0.5 mx-0.5 text-xs md:text-sm font-semibold rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 hover:border-amber-400 transition-colors cursor-pointer ${chordClassName}`}
-              title={`View ${token.text} chord diagram`}
+              className={`inline-flex items-center px-1.5 py-0.5 mx-0.5 text-xs md:text-sm font-mono font-bold rounded bg-[#29221b] text-amber-400 border border-[#4a3d2e] hover:border-amber-500 hover:bg-[#332b22] transition-colors cursor-pointer ${chordClassName}`}
+              title={`View ${token.text} fretboard chart`}
             >
               {token.text}
             </button>
