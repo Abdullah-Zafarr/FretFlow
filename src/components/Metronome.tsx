@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Volume2, VolumeX, Play, Pause, Plus, Minus, Music } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, Plus, Minus, Activity } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
 
 interface MetronomeProps {
@@ -91,6 +91,7 @@ export const Metronome: React.FC<MetronomeProps> = ({
   }, [isPlaying, isMuted, scheduleNextNote]);
 
   const togglePlay = () => {
+    soundEngine.playMechanicalClick('stomp');
     setIsPlaying((prev) => !prev);
   };
 
@@ -101,6 +102,7 @@ export const Metronome: React.FC<MetronomeProps> = ({
   };
 
   const handleTap = () => {
+    soundEngine.playMechanicalClick('rotary');
     const now = Date.now();
     if (tapTimeoutRef.current) {
       window.clearTimeout(tapTimeoutRef.current);
@@ -132,29 +134,38 @@ export const Metronome: React.FC<MetronomeProps> = ({
   };
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-xl text-slate-100 backdrop-blur-sm">
-      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+    <div className="bg-[#181512] border border-[#383025] rounded-xl p-4 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6),0_4px_12px_rgba(0,0,0,0.5)] text-[#f0ebe1] select-none relative">
+      <div className="absolute top-2.5 left-2.5 screw-head" />
+      <div className="absolute top-2.5 right-2.5 screw-head" />
+
+      {/* Top Header & Time Signature */}
+      <div className="flex items-center justify-between pb-3 border-b border-[#2d251d] sm:px-3">
         <div className="flex items-center gap-2">
-          <Music className="w-5 h-5 text-amber-500" />
-          <span className="font-semibold text-sm uppercase tracking-wider text-slate-300">Metronome</span>
+          <Activity className="w-4 h-4 text-amber-500" />
+          <span className="font-mono font-bold text-xs uppercase tracking-widest text-[#d6cdbe]">
+            ANALOG TEMPO ENGINE
+          </span>
           {activeItemName && (
-            <span className="text-xs text-slate-500 hidden sm:inline truncate max-w-[150px]">
-              • {activeItemName}
+            <span className="text-[11px] font-mono text-[#8c8070] hidden sm:inline truncate max-w-[150px]">
+              [{activeItemName}]
             </span>
           )}
         </div>
         
-        {/* Time signature pills */}
-        <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
+        {/* Time Signature Selector */}
+        <div className="flex items-center gap-1 bg-[#120f0d] p-1 rounded border border-[#2e261e]">
           {(['2/4', '3/4', '4/4', '6/8'] as TimeSignature[]).map((sig) => (
             <button
               key={sig}
               type="button"
-              onClick={() => setTimeSig(sig)}
-              className={`px-2 py-0.5 text-xs font-semibold rounded ${
+              onClick={() => {
+                soundEngine.playMechanicalClick('toggle');
+                setTimeSig(sig);
+              }}
+              className={`px-2 py-0.5 text-xs font-mono font-bold rounded cursor-pointer ${
                 timeSig === sig
-                  ? 'bg-amber-500 text-slate-950 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-amber-500 text-[#141210] shadow-sm'
+                  : 'text-[#8c8070] hover:text-[#f0ebe1]'
               } transition-colors`}
             >
               {sig}
@@ -163,76 +174,89 @@ export const Metronome: React.FC<MetronomeProps> = ({
         </div>
       </div>
 
-      {/* Main BPM Display & Quick Modifiers */}
-      <div className="my-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-1">
+      {/* Main BPM Readout & Analog Stepper Controls */}
+      <div className="my-4 flex items-center justify-between gap-4 sm:px-3">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => updateBpm(bpm - 5)}
-            className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold text-xs"
-            title="Minus 5 BPM"
+            onClick={() => {
+              soundEngine.playMechanicalClick('rotary');
+              updateBpm(bpm - 5);
+            }}
+            className="w-9 h-8 rounded bg-[#241e17] hover:bg-[#2e261d] border border-[#3d3326] text-[#c9bea8] flex items-center justify-center font-mono font-bold text-xs cursor-pointer active:translate-y-0.5"
+            title="Step back 5 BPM"
           >
             -5
           </button>
           <button
             type="button"
-            onClick={() => updateBpm(bpm - 1)}
-            className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center"
-            title="Minus 1 BPM"
+            onClick={() => {
+              soundEngine.playMechanicalClick('rotary');
+              updateBpm(bpm - 1);
+            }}
+            className="w-9 h-8 rounded bg-[#241e17] hover:bg-[#2e261d] border border-[#3d3326] text-[#c9bea8] flex items-center justify-center cursor-pointer active:translate-y-0.5"
+            title="Step back 1 BPM"
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-3.5 h-3.5" />
           </button>
         </div>
 
+        {/* Big Central Readout */}
         <div className="text-center">
-          <div className="text-4xl font-black text-amber-400 tracking-tight flex items-baseline justify-center gap-1">
+          <div className="text-4xl font-mono font-black text-amber-400 tracking-tight flex items-baseline justify-center gap-1.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             <span>{bpm}</span>
-            <span className="text-xs font-semibold uppercase text-slate-400">BPM</span>
+            <span className="text-xs font-mono font-bold uppercase text-[#8c8070]">BPM</span>
           </div>
-          <div className="text-[11px] text-slate-500 font-medium">
-            {bpm < 60 ? 'Largo' : bpm < 76 ? 'Adagio' : bpm < 108 ? 'Andante' : bpm < 120 ? 'Moderato' : bpm < 168 ? 'Allegro' : 'Presto'}
+          <div className="text-[11px] font-mono uppercase tracking-widest text-[#a39786] font-semibold mt-0.5">
+            {bpm < 60 ? 'Largo (Broad)' : bpm < 76 ? 'Adagio (Slow)' : bpm < 108 ? 'Andante (Walking)' : bpm < 120 ? 'Moderato' : bpm < 168 ? 'Allegro (Lively)' : 'Presto (Rapid)'}
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => updateBpm(bpm + 1)}
-            className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center"
-            title="Plus 1 BPM"
+            onClick={() => {
+              soundEngine.playMechanicalClick('rotary');
+              updateBpm(bpm + 1);
+            }}
+            className="w-9 h-8 rounded bg-[#241e17] hover:bg-[#2e261d] border border-[#3d3326] text-[#c9bea8] flex items-center justify-center cursor-pointer active:translate-y-0.5"
+            title="Advance 1 BPM"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
           </button>
           <button
             type="button"
-            onClick={() => updateBpm(bpm + 5)}
-            className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center font-bold text-xs"
-            title="Plus 5 BPM"
+            onClick={() => {
+              soundEngine.playMechanicalClick('rotary');
+              updateBpm(bpm + 5);
+            }}
+            className="w-9 h-8 rounded bg-[#241e17] hover:bg-[#2e261d] border border-[#3d3326] text-[#c9bea8] flex items-center justify-center font-mono font-bold text-xs cursor-pointer active:translate-y-0.5"
+            title="Advance 5 BPM"
           >
             +5
           </button>
         </div>
       </div>
 
-      {/* BPM Slider */}
-      <div className="px-1 mb-4">
+      {/* Tactile Slider Track */}
+      <div className="px-3 mb-4">
         <input
           type="range"
           min="30"
           max="260"
           value={bpm}
           onChange={(e) => updateBpm(Number(e.target.value))}
-          className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+          className="w-full h-2 bg-[#120f0d] rounded appearance-none cursor-pointer accent-amber-500 border border-[#2e261e]"
         />
-        <div className="flex justify-between text-[10px] text-slate-500 mt-1">
-          <span>30</span>
-          <span>120</span>
-          <span>260</span>
+        <div className="flex justify-between text-[10px] font-mono text-[#7d7262] mt-1 font-semibold">
+          <span>30 LARGO</span>
+          <span>120 MODERATO</span>
+          <span>260 PRESTO</span>
         </div>
       </div>
 
-      {/* Beat Visualizer Dots */}
-      <div className="flex justify-center items-center gap-2 my-3">
+      {/* Illuminated Beat Lamps (Analog VU style) */}
+      <div className="flex justify-center items-center gap-3 my-3 py-2 bg-[#120f0d] rounded-lg border border-[#29221b] max-w-sm mx-auto shadow-inner">
         {Array.from({ length: beatsPerMeasure }).map((_, i) => {
           const isActive = isPlaying && currentBeat === i;
           const isAccent = i === 0;
@@ -240,38 +264,40 @@ export const Metronome: React.FC<MetronomeProps> = ({
           return (
             <div
               key={i}
-              className={`transition-all duration-75 rounded-full ${
+              className={`transition-all duration-75 rounded-full flex items-center justify-center ${
                 isActive
                   ? isAccent
-                    ? 'w-4 h-4 bg-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.9)] scale-125'
-                    : 'w-3.5 h-3.5 bg-amber-500/90 shadow-[0_0_8px_rgba(245,158,11,0.5)] scale-110'
-                  : 'w-2.5 h-2.5 bg-slate-800'
+                    ? 'w-5 h-5 bg-gradient-to-tr from-amber-400 to-yellow-200 border border-amber-300 shadow-[0_0_14px_rgba(245,158,11,1)]'
+                    : 'w-4 h-4 bg-gradient-to-tr from-amber-500 to-amber-300 border border-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.8)]'
+                  : 'w-3 h-3 bg-[#241e17] border border-[#382f23]'
               }`}
-            />
+            >
+              {isAccent && <span className="text-[8px] font-mono font-black text-[#141210]">1</span>}
+            </div>
           );
         })}
       </div>
 
-      {/* Control Buttons */}
-      <div className="flex items-center gap-2 pt-2">
+      {/* Control Hardware Footswitches */}
+      <div className="flex items-center gap-2 pt-2 sm:px-3">
         <button
           type="button"
           onClick={togglePlay}
-          className={`flex-1 py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-sm shadow-md transition-all ${
+          className={`flex-1 py-2.5 px-4 rounded-lg font-mono font-bold flex items-center justify-center gap-2 text-xs shadow-md transition-all cursor-pointer active:translate-y-0.5 ${
             isPlaying
-              ? 'bg-rose-600 hover:bg-rose-500 text-white'
-              : 'bg-amber-500 hover:bg-amber-400 text-slate-950'
+              ? 'bg-rose-700 hover:bg-rose-600 text-white border border-rose-500'
+              : 'bg-amber-500 hover:bg-amber-400 text-[#141210] border border-amber-300'
           }`}
         >
           {isPlaying ? (
             <>
               <Pause className="w-4 h-4 fill-current" />
-              <span>Stop</span>
+              <span>HALT METRONOME</span>
             </>
           ) : (
             <>
               <Play className="w-4 h-4 fill-current" />
-              <span>Start Metronome</span>
+              <span>ENGAGE METRONOME</span>
             </>
           )}
         </button>
@@ -279,21 +305,24 @@ export const Metronome: React.FC<MetronomeProps> = ({
         <button
           type="button"
           onClick={handleTap}
-          className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition-colors active:scale-95 border border-slate-700"
-          title="Tap along with rhythm to detect tempo"
+          className="px-4 py-2.5 rounded-lg bg-[#241e17] hover:bg-[#2e261d] text-[#d6cdbe] font-mono font-bold text-xs uppercase tracking-wider transition-colors active:translate-y-0.5 border border-[#3d3326] cursor-pointer"
+          title="Tap in tempo to calibrate BPM"
         >
-          Tap Tempo
+          TAP TEMPO
         </button>
 
         <button
           type="button"
-          onClick={() => setIsMuted(!isMuted)}
-          className={`p-2.5 rounded-xl border ${
+          onClick={() => {
+            soundEngine.playMechanicalClick('toggle');
+            setIsMuted(!isMuted);
+          }}
+          className={`p-2.5 rounded-lg border transition-colors cursor-pointer ${
             isMuted
-              ? 'bg-rose-950/60 border-rose-800 text-rose-400'
-              : 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-400 hover:text-slate-200'
-          } transition-colors`}
-          title={isMuted ? 'Unmute' : 'Mute clicks (visual only)'}
+              ? 'bg-[#291717] border-[#4a2626] text-[#e07b7b]'
+              : 'bg-[#241e17] hover:bg-[#2e261d] border-[#3d3326] text-[#998d7d] hover:text-[#f0ebe1]'
+          }`}
+          title={isMuted ? 'Clicks Muted (Optical Only)' : 'Audible Clicks Engaged'}
         >
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>
