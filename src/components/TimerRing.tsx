@@ -1,5 +1,6 @@
 import React from 'react';
 import { Play, Pause, RotateCcw, CheckCircle2, Plus, Minus, FastForward } from 'lucide-react';
+import { soundEngine } from '../utils/audio';
 
 interface TimerRingProps {
   secondsLeft: number;
@@ -31,11 +32,11 @@ export const TimerRing: React.FC<TimerRingProps> = ({
     return `${mins.toString().padStart(2, '0')}:${remSecs.toString().padStart(2, '0')}`;
   };
 
-  // Circular SVG progress calculation
-  const size = 230;
-  const strokeWidth = 10;
+  // Circular gauge geometry
+  const size = 240;
+  const strokeWidth = 12;
   const center = size / 2;
-  const radius = center - strokeWidth - 6;
+  const radius = center - strokeWidth - 10;
   const circumference = 2 * Math.PI * radius;
 
   // Fraction completed: 0 at start, 1 when timer runs out
@@ -43,25 +44,40 @@ export const TimerRing: React.FC<TimerRingProps> = ({
   const strokeDashoffset = circumference * (1 - fractionElapsed);
 
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      {/* Circle container */}
-      <div className="relative flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center p-3 select-none">
+      {/* Analog Gauge Bezel Enclosure */}
+      <div className="relative flex items-center justify-center p-3 rounded-full bg-[#171411] border-2 border-[#383026] shadow-[inset_0_2px_8px_rgba(0,0,0,0.8),0_6px_20px_rgba(0,0,0,0.5)]">
+        {/* Four Hardware Screws at 45 degree positions */}
+        <div className="absolute top-2 left-2 screw-head" />
+        <div className="absolute top-2 right-2 screw-head" />
+        <div className="absolute bottom-2 left-2 screw-head" />
+        <div className="absolute bottom-2 right-2 screw-head" />
+
         <svg width={size} height={size} className="transform -rotate-90">
-          {/* Background Track */}
+          {/* Inner Meter Chamber */}
+          <circle
+            cx={center}
+            cy={center}
+            r={radius + 4}
+            fill="#120f0d"
+          />
+
+          {/* Background Recessed Track */}
           <circle
             cx={center}
             cy={center}
             r={radius}
-            stroke="#1e293b"
+            stroke="#27211b"
             strokeWidth={strokeWidth}
             fill="transparent"
           />
-          {/* Animated Progress Ring */}
+
+          {/* Animated Warm Filament Progress Arc */}
           <circle
             cx={center}
             cy={center}
             r={radius}
-            stroke="#f59e0b"
+            stroke={secondsLeft === 0 ? '#10b981' : isRunning ? '#f59e0b' : '#b45309'}
             strokeWidth={strokeWidth}
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
@@ -71,51 +87,71 @@ export const TimerRing: React.FC<TimerRingProps> = ({
           />
         </svg>
 
-        {/* Center content */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <div className="text-4xl md:text-5xl font-mono font-extrabold tracking-tight text-white mb-1">
+        {/* Center Readout & Controls */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+          <div className="text-4xl md:text-5xl font-mono font-black tracking-tight text-[#f7f3eb] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
             {formatTime(secondsLeft)}
           </div>
-          <div className="text-xs uppercase font-semibold text-slate-400 tracking-wider">
-            {isRunning ? 'Session Active' : secondsLeft === 0 ? 'Completed!' : 'Ready'}
+
+          <div className="text-[10px] font-mono uppercase tracking-[0.2em] font-bold mt-1 text-[#a69a89]">
+            {isRunning ? (
+              <span className="text-amber-400">● RUNNING</span>
+            ) : secondsLeft === 0 ? (
+              <span className="text-emerald-400">● TARGET MET</span>
+            ) : (
+              <span>○ STANDBY</span>
+            )}
           </div>
 
-          {/* Quick Play/Pause big button in center or right beneath */}
+          {/* Stompbox Footswitch Trigger */}
           <button
             type="button"
-            onClick={isRunning ? onPause : onPlay}
-            className={`mt-3 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform active:scale-95 cursor-pointer ${
+            onClick={() => {
+              soundEngine.playMechanicalClick('stomp');
+              if (isRunning) {
+                onPause();
+              } else {
+                onPlay();
+              }
+            }}
+            className={`mt-3 w-16 h-16 rounded-full flex items-center justify-center cursor-pointer stomp-button shadow-[0_5px_0_#0d0c0a,0_8px_16px_rgba(0,0,0,0.6)] ${
               isRunning
-                ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 ring-4 ring-amber-500/20'
-                : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 ring-4 ring-emerald-500/20'
+                ? 'bg-gradient-to-b from-[#f59e0b] to-[#b45309] text-[#141210] border-2 border-[#fcd34d]'
+                : 'bg-gradient-to-b from-[#383129] to-[#221e19] text-[#f2eee7] border-2 border-[#54483c] hover:border-amber-500/60'
             }`}
-            title={isRunning ? 'Pause Timer' : 'Start Timer'}
+            title={isRunning ? 'Halt Session (Footswitch)' : 'Engage Session (Footswitch)'}
           >
             {isRunning ? (
-              <Pause className="w-6 h-6 fill-current" />
+              <Pause className="w-7 h-7 fill-current" />
             ) : (
-              <Play className="w-6 h-6 fill-current ml-0.5" />
+              <Play className="w-7 h-7 fill-current ml-1" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Quick +/- 1 minute adjustments & Reset / Skip */}
+      {/* Analog Stepper Controls (+/- 1m, Reset, Skip) */}
       <div className="flex items-center gap-2 mt-4 text-xs">
         {onAdjustSeconds && (
           <>
             <button
               type="button"
-              onClick={() => onAdjustSeconds(-60)}
-              className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium flex items-center gap-1 transition-colors"
-              title="Subtract 1 minute"
+              onClick={() => {
+                soundEngine.playMechanicalClick('rotary');
+                onAdjustSeconds(-60);
+              }}
+              className="p-1.5 px-3 rounded bg-[#221d17] hover:bg-[#2e2720] border border-[#3d3326] text-[#c9bea5] font-mono font-bold flex items-center gap-1 cursor-pointer shadow-sm active:translate-y-0.5"
+              title="Step back 1 minute"
             >
               <Minus className="w-3.5 h-3.5" /> 1m
             </button>
             <button
               type="button"
-              onClick={() => onAdjustSeconds(60)}
-              className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium flex items-center gap-1 transition-colors"
+              onClick={() => {
+                soundEngine.playMechanicalClick('rotary');
+                onAdjustSeconds(60);
+              }}
+              className="p-1.5 px-3 rounded bg-[#221d17] hover:bg-[#2e2720] border border-[#3d3326] text-[#c9bea5] font-mono font-bold flex items-center gap-1 cursor-pointer shadow-sm active:translate-y-0.5"
               title="Add 1 minute"
             >
               <Plus className="w-3.5 h-3.5" /> 1m
@@ -125,9 +161,12 @@ export const TimerRing: React.FC<TimerRingProps> = ({
 
         <button
           type="button"
-          onClick={onReset}
-          className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 font-medium flex items-center gap-1 transition-colors"
-          title="Reset timer to scheduled time"
+          onClick={() => {
+            soundEngine.playMechanicalClick('toggle');
+            onReset();
+          }}
+          className="p-1.5 px-3 rounded bg-[#221d17] hover:bg-[#2e2720] border border-[#3d3326] text-[#8e8272] hover:text-[#f0eae0] font-mono text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-sm active:translate-y-0.5"
+          title="Reset timer to target duration"
         >
           <RotateCcw className="w-3.5 h-3.5" /> Reset
         </button>
@@ -135,23 +174,29 @@ export const TimerRing: React.FC<TimerRingProps> = ({
         {onSkip && (
           <button
             type="button"
-            onClick={onSkip}
-            className="p-1.5 px-2.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 font-medium flex items-center gap-1 transition-colors"
-            title="Skip to next item"
+            onClick={() => {
+              soundEngine.playMechanicalClick('toggle');
+              onSkip();
+            }}
+            className="p-1.5 px-3 rounded bg-[#221d17] hover:bg-[#2e2720] border border-[#3d3326] text-[#8e8272] hover:text-[#f0eae0] font-mono text-[11px] font-bold flex items-center gap-1.5 cursor-pointer shadow-sm active:translate-y-0.5"
+            title="Advance to next exercise"
           >
-            <FastForward className="w-3.5 h-3.5" /> Skip
+            <FastForward className="w-3.5 h-3.5" /> Advance
           </button>
         )}
       </div>
 
-      {/* "Mark as done – log full scheduled time" (Directly from JustinGuitar PA feature 2.2) */}
+      {/* Log Full Scheduled Time Stamped Pushbutton */}
       <button
         type="button"
-        onClick={onMarkDoneFullTime}
-        className="mt-4 w-full max-w-xs py-2 px-4 rounded-xl bg-slate-800/80 hover:bg-emerald-950/40 hover:text-emerald-400 border border-slate-700 hover:border-emerald-600/60 text-slate-300 font-medium text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm group"
+        onClick={() => {
+          soundEngine.playMechanicalClick('stomp');
+          onMarkDoneFullTime();
+        }}
+        className="mt-4 w-full max-w-xs py-2.5 px-4 rounded-lg bg-[#1f1b16] hover:bg-[#2a241e] border border-[#42372a] hover:border-emerald-600/60 text-[#c7bea8] hover:text-emerald-400 font-mono text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.5)] active:translate-y-0.5 group"
       >
-        <CheckCircle2 className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-        <span>Mark as done – log full scheduled time</span>
+        <CheckCircle2 className="w-4 h-4 text-emerald-500 group-hover:scale-110 transition-transform" />
+        <span>Log Full Scheduled Time</span>
       </button>
     </div>
   );
