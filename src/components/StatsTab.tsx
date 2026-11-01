@@ -95,7 +95,7 @@ export const StatsTab: React.FC = () => {
     return filteredLogs.reduce((acc, l) => acc + l.minutes, 0);
   }, [filteredLogs]);
 
-  // Daily grouped data for the Level Meter Bar Chart
+  // Daily grouped data for chart
   const dailyData = useMemo(() => {
     const daysMap: Record<string, number> = {};
 
@@ -117,8 +117,8 @@ export const StatsTab: React.FC = () => {
       .map((dateStr) => {
         const [year, month, day] = dateStr.split('-').map(Number);
         const dateObj = new Date(year, month - 1, day);
-        const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
-        const monthDay = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase();
+        const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+        const monthDay = dateObj.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
 
         return {
           date: dateStr,
@@ -149,7 +149,7 @@ export const StatsTab: React.FC = () => {
     return Object.values(map).sort((a, b) => b.minutes - a.minutes);
   }, [filteredLogs]);
 
-  // Streak calculation (consecutive days with at least 1 log)
+  // Streak calculation
   const currentStreak = useMemo(() => {
     const distinctDates = Array.from(new Set(logs.map((l) => l.date))).sort().reverse();
     if (distinctDates.length === 0) return 0;
@@ -181,7 +181,6 @@ export const StatsTab: React.FC = () => {
     if (!dateStr || dateStr.length < 10) return dateStr;
     const [year, month, day] = dateStr.split('-').map(Number);
     return new Date(year, month - 1, day).toLocaleDateString('en-US', {
-      weekday: 'long',
       month: 'short',
       day: 'numeric',
     });
@@ -213,18 +212,15 @@ export const StatsTab: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-5">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#2d251d]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#222222]">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] font-bold text-amber-500 mb-1">
-            DELIBERATE PRACTICE METRICS & LOGBOOK
-          </div>
-          <h2 className="text-2xl font-serif font-black text-[#f7f3ec] tracking-tight m-0">
-            Studio Logbook
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
+            Practice Statistics
           </h2>
-          <p className="text-xs text-[#9c9080] mt-1 font-mono">
-            Audit practice consistency, verify exercise time allocation, and record offline workshop sessions.
+          <p className="text-xs text-[#888888] mt-1 font-sans">
+            Review practice history, daily consistency, and exercise distribution.
           </p>
         </div>
 
@@ -234,84 +230,82 @@ export const StatsTab: React.FC = () => {
             soundEngine.playMechanicalClick('stomp');
             setShowManualModal(true);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#241e17] hover:bg-[#30271e] text-amber-400 border border-[#42372a] font-mono font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md active:translate-y-0.5"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#1a1a1a] hover:bg-[#242424] text-white border border-[#2a2a2a] text-xs font-medium transition-colors cursor-pointer"
         >
-          <Plus className="w-4 h-4 text-amber-500" />
+          <Plus className="w-4 h-4 text-amber-400" />
           <span>Log Offline Practice</span>
         </button>
       </div>
 
-      {/* Analog Studio Telemetry Indicators */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* Practice Time in Range Meter */}
-        <div className="bg-[#1c1916] border border-[#383025] rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-4 relative">
-          <div className="w-12 h-12 rounded-lg bg-[#241e17] text-amber-400 flex items-center justify-center border border-[#443728] shadow-inner flex-shrink-0">
-            <Clock className="w-6 h-6 text-amber-500" />
+      {/* Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* Total Time */}
+        <div className="bg-[#141414] border border-[#222222] rounded-lg p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-md bg-[#1c1c1c] text-amber-400 flex items-center justify-center border border-[#2a2a2a] flex-shrink-0">
+            <Clock className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070]">
-              TOTAL LOGGED PRACTICE
+            <div className="text-[11px] text-[#737373]">
+              Practice Time
             </div>
-            <div className="text-xl md:text-2xl font-mono font-black text-[#f7f3ec] mt-0.5 tracking-tight">
-              {hours > 0 ? `${hours}h ${remMinutes}m` : `${remMinutes} mins`}
+            <div className="text-xl font-mono font-medium text-white tracking-tight mt-0.5">
+              {hours > 0 ? `${hours}h ${remMinutes}m` : `${remMinutes}m`}
             </div>
-            <div className="text-[11px] font-mono text-[#8c8070]">
-              {filteredLogs.length} verified sessions
+            <div className="text-[11px] text-[#666666]">
+              {filteredLogs.length} sessions
             </div>
           </div>
         </div>
 
-        {/* Current Day Streak Indicator */}
-        <div className="bg-[#1c1916] border border-[#383025] rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-4 relative">
-          <div className="w-12 h-12 rounded-lg bg-[#271c17] text-orange-400 flex items-center justify-center border border-[#522f22] shadow-inner flex-shrink-0">
-            <Flame className="w-6 h-6 text-orange-500" />
+        {/* Daily Streak */}
+        <div className="bg-[#141414] border border-[#222222] rounded-lg p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-md bg-[#1c1c1c] text-orange-400 flex items-center justify-center border border-[#2a2a2a] flex-shrink-0">
+            <Flame className="w-5 h-5 text-orange-400" />
           </div>
           <div>
-            <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070]">
-              DAILY STREAK
+            <div className="text-[11px] text-[#737373]">
+              Daily Streak
             </div>
-            <div className="text-xl md:text-2xl font-mono font-black text-[#f7f3ec] mt-0.5 tracking-tight">
-              {currentStreak} {currentStreak === 1 ? 'Day' : 'Days'}
+            <div className="text-xl font-mono font-medium text-white tracking-tight mt-0.5">
+              {currentStreak} {currentStreak === 1 ? 'day' : 'days'}
             </div>
-            <div className="text-[11px] font-mono text-[#8c8070]">
-              Deliberate consistency
+            <div className="text-[11px] text-[#666666]">
+              Consecutive days
             </div>
           </div>
         </div>
 
-        {/* Daily Target Benchmark */}
-        <div className="bg-[#1c1916] border border-[#383025] rounded-xl p-4 shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-4 relative">
-          <div className="w-12 h-12 rounded-lg bg-[#19241b] text-emerald-400 flex items-center justify-center border border-[#264a2f] shadow-inner flex-shrink-0">
-            <Award className="w-6 h-6 text-emerald-500" />
+        {/* Daily Target */}
+        <div className="bg-[#141414] border border-[#222222] rounded-lg p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-md bg-[#1c1c1c] text-emerald-400 flex items-center justify-center border border-[#2a2a2a] flex-shrink-0">
+            <Award className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
-            <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070]">
-              DAILY TARGET BENCHMARK
+            <div className="text-[11px] text-[#737373]">
+              Daily Goal
             </div>
-            <div className="text-xl md:text-2xl font-mono font-black text-[#f7f3ec] mt-0.5 tracking-tight">
-              {settings.dailyGoalMinutes} mins
+            <div className="text-xl font-mono font-medium text-white tracking-tight mt-0.5">
+              {settings.dailyGoalMinutes}m
             </div>
-            <div className="text-[11px] font-mono text-[#8c8070]">
-              Target daily calibration
+            <div className="text-[11px] text-[#666666]">
+              Target daily progress
             </div>
           </div>
         </div>
       </div>
 
-      {/* Date Filter & Session Summary Console */}
-      <div className="bg-[#1c1916] border border-[#383025] rounded-xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.5)] space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#2d251d]">
-          {/* Summary Sentence */}
-          <div className="text-xs md:text-sm text-[#d6cdbe] font-sans">
-            From <span className="font-mono font-bold text-amber-400">{formatReadableDate(startDateStr)}</span> to{' '}
-            <span className="font-mono font-bold text-amber-400">{formatReadableDate(endDateStr)}</span> you logged{' '}
-            <span className="font-mono font-black text-emerald-400">
-              {hours > 0 ? `${hours} hours ${remMinutes} mins` : `${remMinutes} mins`}
+      {/* Date Filter & Bar Chart */}
+      <div className="bg-[#141414] border border-[#222222] rounded-lg p-4 sm:p-5 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#1f1f1f]">
+          <div className="text-xs text-[#d4d4d4]">
+            <span>{formatReadableDate(startDateStr)}</span> – <span>{formatReadableDate(endDateStr)}</span>: total{' '}
+            <span className="font-mono text-amber-400 font-medium">
+              {hours > 0 ? `${hours}h ${remMinutes}m` : `${remMinutes}m`}
             </span>
           </div>
 
           {/* Preset Buttons */}
-          <div className="flex items-center gap-1 bg-[#141210] p-1 rounded-lg border border-[#2e261e] text-xs font-mono font-bold">
+          <div className="flex items-center gap-1 bg-[#1a1a1a] p-1 rounded-md border border-[#262626] text-xs font-mono">
             {(['7days', '14days', '30days', 'all', 'custom'] as const).map((preset) => (
               <button
                 key={preset}
@@ -320,51 +314,49 @@ export const StatsTab: React.FC = () => {
                   soundEngine.playMechanicalClick('toggle');
                   setRangePreset(preset);
                 }}
-                className={`px-3 py-1 rounded transition-colors cursor-pointer ${
-                  rangePreset === preset ? 'bg-amber-500 text-[#141210]' : 'text-[#8c8070] hover:text-[#f0ebe1]'
+                className={`px-2.5 py-0.5 rounded transition-colors cursor-pointer ${
+                  rangePreset === preset ? 'bg-[#262626] text-white font-medium' : 'text-[#737373] hover:text-[#d4d4d4]'
                 }`}
               >
-                {preset === '7days' ? '7D' : preset === '14days' ? '14D' : preset === '30days' ? '30D' : preset === 'all' ? 'ALL' : 'CUSTOM'}
+                {preset === '7days' ? '7d' : preset === '14days' ? '14d' : preset === '30days' ? '30d' : preset === 'all' ? 'All' : 'Custom'}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Custom Date Pickers if 'custom' is active */}
+        {/* Custom Date Pickers */}
         {rangePreset === 'custom' && (
-          <div className="flex flex-wrap items-center gap-3 bg-[#141210] p-3 rounded-lg border border-[#2d251d] text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-3 bg-[#111111] p-2.5 rounded border border-[#222222] text-xs font-mono">
             <div className="flex items-center gap-2">
-              <span className="text-[#8c8070]">FROM:</span>
+              <span className="text-[#737373]">From:</span>
               <input
                 type="date"
                 value={customStartDate}
                 onChange={(e) => setCustomStartDate(e.target.value)}
-                className="bg-[#1c1916] border border-[#382f23] rounded px-2.5 py-1 text-[#f5f1ea] focus:outline-none focus:border-amber-500"
+                className="bg-[#181818] border border-[#2a2a2a] rounded px-2 py-0.5 text-white focus:outline-none focus:border-amber-400"
               />
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-[#8c8070]">TO:</span>
+              <span className="text-[#737373]">To:</span>
               <input
                 type="date"
                 value={customEndDate}
                 onChange={(e) => setCustomEndDate(e.target.value)}
-                className="bg-[#1c1916] border border-[#382f23] rounded px-2.5 py-1 text-[#f5f1ea] focus:outline-none focus:border-amber-500"
+                className="bg-[#181818] border border-[#2a2a2a] rounded px-2 py-0.5 text-white focus:outline-none focus:border-amber-400"
               />
             </div>
           </div>
         )}
 
-        {/* Daily Practice Level Meters */}
-        <div className="pt-2">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070] flex items-center gap-1.5">
-              <BarChart3 className="w-3.5 h-3.5 text-amber-500" /> DAILY LEVEL TELEMETRY
-            </span>
-            <span className="text-[10px] font-mono text-[#7d7262]">Minutes practiced per calendar day</span>
+        {/* Daily Bar Chart */}
+        <div>
+          <div className="text-[11px] font-mono text-[#737373] mb-2 flex items-center gap-1.5">
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>Daily Minutes</span>
           </div>
 
           {dailyData.length > 0 ? (
-            <div className="h-56 flex items-end gap-2 md:gap-3 pt-8 pb-4 px-2 border-b border-[#2d251d] overflow-x-auto bg-[#141210] rounded-lg border">
+            <div className="h-44 flex items-end gap-2 md:gap-3 pt-6 pb-2 px-2 overflow-x-auto">
               {dailyData.map((day, idx) => {
                 const heightPercent = maxDailyMinutes > 0 ? Math.round((day.minutes / maxDailyMinutes) * 100) : 0;
                 const isZero = day.minutes === 0;
@@ -372,27 +364,22 @@ export const StatsTab: React.FC = () => {
                 return (
                   <div
                     key={idx}
-                    className="flex-1 min-w-[40px] flex flex-col items-center justify-end h-full group select-none"
+                    className="flex-1 min-w-[36px] flex flex-col items-center justify-end h-full select-none"
                   >
-                    {/* Value readout */}
-                    <div className="text-[10px] font-mono font-bold text-amber-400 mb-1">
+                    <div className="text-[10px] font-mono text-[#888888] mb-1">
                       {day.minutes > 0 ? day.minutes : ''}
                     </div>
 
-                    {/* Analog Level Bar */}
-                    <div className="w-full max-w-[42px] bg-[#221c17] rounded-t relative flex items-end overflow-hidden h-36 border border-[#2f251c]">
+                    <div className="w-full max-w-[32px] bg-[#1a1a1a] rounded-t relative flex items-end overflow-hidden h-28">
                       <div
                         style={{ height: `${Math.max(isZero ? 4 : heightPercent, 4)}%` }}
-                        className={`w-full rounded-t transition-all duration-300 ${
-                          isZero
-                            ? 'bg-[#2b221a]'
-                            : 'bg-gradient-to-t from-[#b45309] to-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+                        className={`w-full rounded-t transition-all duration-200 ${
+                          isZero ? 'bg-[#222222]' : 'bg-amber-400'
                         }`}
                       />
                     </div>
 
-                    {/* Date label */}
-                    <div className="text-[9px] font-mono font-semibold text-[#8c8070] mt-2 text-center truncate max-w-[60px]">
+                    <div className="text-[9px] font-mono text-[#666666] mt-1.5 text-center truncate max-w-[50px]">
                       {day.label}
                     </div>
                   </div>
@@ -400,53 +387,52 @@ export const StatsTab: React.FC = () => {
               })}
             </div>
           ) : (
-            <div className="p-8 text-center text-[#7d7262] text-xs font-mono">
-              No practice logs indexed for this date range.
+            <div className="p-8 text-center text-[#666666] text-xs">
+              No practice logs in this date range.
             </div>
           )}
         </div>
       </div>
 
-      {/* Exercise Time Allocation Breakdown */}
-      <div className="bg-[#1c1916] border border-[#383025] rounded-xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center justify-between pb-3 border-b border-[#2d251d]">
+      {/* Exercise Breakdown */}
+      <div className="bg-[#141414] border border-[#222222] rounded-lg p-4 sm:p-5">
+        <div className="flex items-center justify-between pb-3 border-b border-[#1f1f1f]">
           <button
             type="button"
             onClick={() => {
               soundEngine.playMechanicalClick('toggle');
               setShowDetails(!showDetails);
             }}
-            className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#d6cdbe] hover:text-amber-400 transition-colors cursor-pointer"
+            className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#a3a3a3] hover:text-white transition-colors cursor-pointer"
           >
-            <span>TIME ALLOCATION BY DRILL ({itemBreakdown.length})</span>
-            {showDetails ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <span>Time by Exercise ({itemBreakdown.length})</span>
+            {showDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
-          <span className="text-[11px] font-mono text-[#8c8070]">Ranked by total practice minutes</span>
+          <span className="text-[11px] font-mono text-[#666666]">Sorted by duration</span>
         </div>
 
         {showDetails && (
-          <div className="mt-4 space-y-3.5 animate-in fade-in duration-100">
+          <div className="mt-3.5 space-y-3 animate-in fade-in duration-100">
             {itemBreakdown.map((item, idx) => {
               const itemPercent = totalMinutes > 0 ? Math.round((item.minutes / totalMinutes) * 100) : 0;
 
               return (
                 <div key={idx} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-[#f0ebe1] font-semibold flex items-center gap-2">
+                    <span className="text-white font-medium flex items-center gap-2">
                       <ChordText text={item.name} />
-                      <span className="text-[10px] font-mono text-[#7d7262]">
-                        ({item.count} {item.count === 1 ? 'drill' : 'drills'})
+                      <span className="text-[10px] font-mono text-[#666666]">
+                        ({item.count} {item.count === 1 ? 'session' : 'sessions'})
                       </span>
                     </span>
-                    <span className="font-mono text-amber-400 font-bold">
-                      {item.minutes} mins ({itemPercent}%)
+                    <span className="font-mono text-amber-400">
+                      {item.minutes}m ({itemPercent}%)
                     </span>
                   </div>
-                  {/* Gauge level track */}
-                  <div className="w-full bg-[#120f0d] h-2 rounded overflow-hidden border border-[#2d251d]">
+                  <div className="w-full bg-[#1c1c1c] h-1.5 rounded overflow-hidden">
                     <div
                       style={{ width: `${itemPercent}%` }}
-                      className="bg-amber-500 h-full rounded transition-all duration-300"
+                      className="bg-amber-400 h-full rounded transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -454,75 +440,75 @@ export const StatsTab: React.FC = () => {
             })}
 
             {itemBreakdown.length === 0 && (
-              <div className="p-4 text-center text-[#7d7262] text-xs font-mono">
-                No exercise breakdown recorded for the selected window.
+              <div className="p-4 text-center text-[#666666] text-xs">
+                No exercise breakdown for this range.
               </div>
             )}
           </div>
         )}
       </div>
 
-      {/* Raw Practice Session Ledger Table */}
-      <div className="bg-[#1c1916] border border-[#383025] rounded-xl p-5 shadow-[0_4px_16px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center justify-between pb-3 border-b border-[#2d251d]">
+      {/* Raw Practice History Table */}
+      <div className="bg-[#141414] border border-[#222222] rounded-lg p-4 sm:p-5">
+        <div className="flex items-center justify-between pb-3 border-b border-[#1f1f1f]">
           <button
             type="button"
             onClick={() => {
               soundEngine.playMechanicalClick('toggle');
               setShowRawLogs(!showRawLogs);
             }}
-            className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-[#d6cdbe] hover:text-amber-400 transition-colors cursor-pointer"
+            className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-[#a3a3a3] hover:text-white transition-colors cursor-pointer"
           >
-            <span>MASTER PRACTICE LEDGER ({filteredLogs.length})</span>
-            {showRawLogs ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+            <span>History Log ({filteredLogs.length})</span>
+            {showRawLogs ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
-          <span className="text-[11px] font-mono text-[#8c8070]">Audit and remove individual sessions</span>
+          <span className="text-[11px] font-mono text-[#666666]">Review past records</span>
         </div>
 
         {showRawLogs && (
-          <div className="mt-4 overflow-x-auto animate-in fade-in duration-100">
+          <div className="mt-3 overflow-x-auto animate-in fade-in duration-100">
             <table className="w-full text-left text-xs font-mono">
               <thead>
-                <tr className="border-b border-[#2d251d] text-[#8c8070] uppercase tracking-wider text-[10px]">
-                  <th className="pb-2">DATE</th>
-                  <th className="pb-2">EXERCISE</th>
-                  <th className="pb-2">SEQUENCE</th>
-                  <th className="pb-2 text-center">REPS / BENCHMARK</th>
-                  <th className="pb-2 text-right">TIME</th>
-                  <th className="pb-2 text-right">ACTION</th>
+                <tr className="border-b border-[#222222] text-[#666666] uppercase text-[10px]">
+                  <th className="pb-2">Date</th>
+                  <th className="pb-2">Exercise</th>
+                  <th className="pb-2">Routine</th>
+                  <th className="pb-2 text-center">Score</th>
+                  <th className="pb-2 text-right">Time</th>
+                  <th className="pb-2 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#241e17]">
+              <tbody className="divide-y divide-[#1c1c1c]">
                 {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-[#201c18]">
-                    <td className="py-2.5 text-[#8c8070]">{log.date}</td>
-                    <td className="py-2.5 font-sans font-semibold text-[#f0ebe1]">
+                  <tr key={log.id} className="hover:bg-[#1a1a1a]">
+                    <td className="py-2 text-[#737373]">{log.date}</td>
+                    <td className="py-2 font-sans font-medium text-white">
                       <ChordText text={log.itemName} />
                     </td>
-                    <td className="py-2.5 text-[#7d7262] truncate max-w-[150px]">
-                      {log.routineName || 'Manual Entry'}
+                    <td className="py-2 text-[#666666] truncate max-w-[140px]">
+                      {log.routineName || 'Manual'}
                     </td>
-                    <td className="py-2.5 text-center">
+                    <td className="py-2 text-center">
                       {log.scoreCount !== undefined ? (
-                        <span className="px-2 py-0.5 rounded bg-[#18271e] text-emerald-400 font-bold text-[11px] border border-[#234d31]">
+                        <span className="text-emerald-400 font-mono">
                           {log.scoreCount} reps
                         </span>
                       ) : (
-                        <span className="text-[#52493d]">—</span>
+                        <span className="text-[#404040]">—</span>
                       )}
                     </td>
-                    <td className="py-2.5 text-right font-bold text-amber-400">
-                      {log.minutes} min
+                    <td className="py-2 text-right text-amber-400 font-medium">
+                      {log.minutes}m
                     </td>
-                    <td className="py-2.5 text-right">
+                    <td className="py-2 text-right">
                       <button
                         type="button"
                         onClick={() => {
                           soundEngine.playMechanicalClick('toggle');
                           deletePracticeLog(log.id);
                         }}
-                        className="p-1 text-[#7d7262] hover:text-[#e07b7b] transition-colors cursor-pointer"
-                        title="Delete log record"
+                        className="p-1 text-[#666666] hover:text-rose-400 transition-colors cursor-pointer"
+                        title="Delete entry"
                       >
                         <Trash2 className="w-3.5 h-3.5 inline" />
                       </button>
@@ -537,14 +523,11 @@ export const StatsTab: React.FC = () => {
 
       {/* Manual Practice Entry Modal */}
       {showManualModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-150">
-          <div className="bg-[#1c1916] border-2 border-[#4f4233] rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4 relative">
-            <div className="absolute top-2.5 left-2.5 screw-head" />
-            <div className="absolute top-2.5 right-2.5 screw-head" />
-
-            <div className="flex items-center justify-between pb-3 border-b border-[#2d251d]">
-              <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-[#f5f1ea] m-0">
-                LOG OFFLINE WORKSHOP SESSION
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-100">
+          <div className="bg-[#171717] border border-[#2a2a2a] rounded-lg max-w-md w-full p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#222222]">
+              <h3 className="text-sm font-semibold text-white m-0">
+                Log Offline Practice
               </h3>
               <button
                 type="button"
@@ -552,33 +535,33 @@ export const StatsTab: React.FC = () => {
                   soundEngine.playMechanicalClick('toggle');
                   setShowManualModal(false);
                 }}
-                className="p-1 text-[#8c8070] hover:text-[#f5f1ea] cursor-pointer"
+                className="p-1 text-[#737373] hover:text-white cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                  SESSION DATE
+                <label className="block text-[11px] text-[#888888] mb-1">
+                  Date
                 </label>
                 <input
                   type="date"
                   value={manualDate}
                   onChange={(e) => setManualDate(e.target.value)}
-                  className="w-full bg-[#141210] border border-[#382f23] rounded-lg px-3 py-2 text-xs text-[#f5f1ea] font-mono focus:outline-none focus:border-amber-500"
+                  className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
                 />
               </div>
 
               <div>
-                <label className="block font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                  EXERCISE / DRILL
+                <label className="block text-[11px] text-[#888888] mb-1">
+                  Exercise
                 </label>
                 <select
                   value={manualItemId}
                   onChange={(e) => setManualItemId(e.target.value)}
-                  className="w-full bg-[#141210] border border-[#382f23] rounded-lg px-3 py-2 text-xs text-[#f5f1ea] font-mono focus:outline-none focus:border-amber-500 cursor-pointer"
+                  className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer"
                 >
                   {activeItems.map((item) => (
                     <option key={item.id} value={item.id}>
@@ -590,8 +573,8 @@ export const StatsTab: React.FC = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                    DURATION (MINUTES)
+                  <label className="block text-[11px] text-[#888888] mb-1">
+                    Duration (Minutes)
                   </label>
                   <input
                     type="number"
@@ -599,13 +582,13 @@ export const StatsTab: React.FC = () => {
                     max="300"
                     value={manualMinutes}
                     onChange={(e) => setManualMinutes(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-full bg-[#141210] border border-[#382f23] rounded-lg px-3 py-2 font-mono text-amber-400 focus:outline-none focus:border-amber-500 text-xs font-bold"
+                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 font-mono text-white focus:outline-none focus:border-amber-400 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                    CHANGES / REPS (OPTIONAL)
+                  <label className="block text-[11px] text-[#888888] mb-1">
+                    Score / Reps (optional)
                   </label>
                   <input
                     type="number"
@@ -614,43 +597,43 @@ export const StatsTab: React.FC = () => {
                     value={manualScoreCount}
                     onChange={(e) => setManualScoreCount(e.target.value)}
                     placeholder="e.g. 50"
-                    className="w-full bg-[#141210] border border-[#382f23] rounded-lg px-3 py-2 font-mono text-emerald-400 focus:outline-none focus:border-amber-500 text-xs"
+                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 font-mono text-white focus:outline-none focus:border-amber-400 text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                  SESSION NOTES (OPTIONAL)
+                <label className="block text-[11px] text-[#888888] mb-1">
+                  Notes (optional)
                 </label>
                 <textarea
                   value={manualNotes}
                   onChange={(e) => setManualNotes(e.target.value)}
                   rows={2}
-                  placeholder="e.g. Practiced with physical metronome on stand..."
-                  className="w-full bg-[#141210] border border-[#382f23] rounded-lg p-2.5 text-xs text-[#f5f1ea] font-sans focus:outline-none focus:border-amber-500"
+                  placeholder="e.g. Practiced with acoustic guitar..."
+                  className="w-full bg-[#121212] border border-[#2a2a2a] rounded p-2 text-xs text-white focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>
 
-            <div className="pt-2 flex items-center justify-end gap-3 border-t border-[#2d251d]">
+            <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#222222]">
               <button
                 type="button"
                 onClick={() => {
                   soundEngine.playMechanicalClick('toggle');
                   setShowManualModal(false);
                 }}
-                className="px-4 py-2 text-xs font-mono font-semibold text-[#8c8070] hover:text-[#f0ebe1] cursor-pointer"
+                className="px-3 py-1.5 text-xs text-[#888888] hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSaveManualPractice}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-[#141210] font-mono font-bold text-xs uppercase tracking-wider shadow-md transition-transform active:translate-y-0.5 cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded bg-white hover:bg-[#e5e5e5] text-black font-medium text-xs transition-colors cursor-pointer"
               >
-                <Save className="w-4 h-4" />
-                <span>Stamp Practice Log</span>
+                <Save className="w-3.5 h-3.5" />
+                <span>Save Log</span>
               </button>
             </div>
           </div>

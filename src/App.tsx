@@ -30,7 +30,7 @@ export const AppContent: React.FC = () => {
   }, [isTimerRunning, timerSeconds, activeItem]);
 
   return (
-    <div className="min-h-screen bg-[#141210] text-[#f2efe9] flex flex-col font-sans selection:bg-amber-600 selection:text-white">
+    <div className="min-h-screen bg-[#0d0d0d] text-[#e5e5e5] flex flex-col font-sans selection:bg-amber-500 selection:text-black">
       {/* Top Navigation */}
       <Navbar
         currentTab={currentTab}
@@ -39,7 +39,7 @@ export const AppContent: React.FC = () => {
       />
 
       {/* Main Tab Content - Keep mounted in DOM so timers, state, and notes never reset or unmount */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-8">
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8">
         <div className={currentTab === 'practice' ? 'block' : 'hidden'}>
           <PracticeTab />
         </div>
@@ -57,16 +57,15 @@ export const AppContent: React.FC = () => {
         </div>
       </main>
 
-      {/* Bottom Footer - Analog Studio Signature */}
-      <footer className="border-t border-[#29241e] bg-[#100e0c] py-4 text-xs text-[#8c8273]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      {/* Minimal Footer */}
+      <footer className="border-t border-[#1f1f1f] py-4 text-xs text-[#737373]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-amber-600 inline-block"></span>
-            <span className="font-semibold text-[#b8ad9e]">JustinGuitar Methodology</span>
-            <span className="text-[#595248]">|</span>
-            <span>Deliberate Practice Workbench</span>
+            <span className="font-medium text-[#a3a3a3]">JustinGuitar Practice Assistant</span>
+            <span className="text-[#404040]">/</span>
+            <span>Deliberate Practice</span>
           </div>
-          <span className="font-mono text-[11px] text-[#70675a]">ANALOG AUDIO & PRACTICE TOOLS • NO CLOUD LOCK-IN</span>
+          <span className="text-[11px] text-[#525252]">Local browser storage • No account required</span>
         </div>
       </footer>
 

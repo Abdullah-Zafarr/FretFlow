@@ -4,8 +4,6 @@ import {
   Edit2,
   Trash2,
   Plus,
-  Clock,
-  CheckCircle,
   ArrowUp,
   ArrowDown,
   X,
@@ -118,63 +116,57 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-5">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#2d251d]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#222222]">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-[0.2em] font-bold text-amber-500 mb-1">
-            STUDIO WORKBENCH SEQUENCE PRESETS
-          </div>
-          <h2 className="text-2xl font-serif font-black text-[#f7f3ec] tracking-tight m-0">
-            Routines Rack
+          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
+            Routines
           </h2>
-          <p className="text-xs text-[#9c9080] mt-1 font-mono">
-            Assemble drills into deliberate daily training blocks. Exactly one sequence is mounted on the bench at a time.
+          <p className="text-xs text-[#888888] mt-1 font-sans">
+            Organize exercises into structured practice sessions. One routine is active at a time.
           </p>
         </div>
 
         <button
           type="button"
           onClick={handleCreateNew}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-[#141210] font-mono font-bold text-xs uppercase tracking-wider shadow-lg transition-transform active:translate-y-0.5 cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white hover:bg-[#e5e5e5] text-black font-medium text-xs transition-colors cursor-pointer"
         >
-          <Plus className="w-4 h-4 stroke-[3]" />
-          <span>New Sequence</span>
+          <Plus className="w-4 h-4 stroke-[2.5]" />
+          <span>New Routine</span>
         </button>
       </div>
 
       {/* Two Column Layout: Active Routine (Left) & Inactive Routines (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Column: Current Active Routine */}
-        <div className="lg:col-span-6 space-y-3">
+        <div className="lg:col-span-6 space-y-2.5">
           <div className="flex items-center gap-2">
-            <span className="jewel-lamp jewel-lamp-active" />
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-amber-400 m-0">
-              CURRENTLY MOUNTED ON BENCH
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
+            <h3 className="text-xs font-mono uppercase tracking-wider text-[#a3a3a3] m-0">
+              Active Routine
             </h3>
           </div>
 
           {activeRoutine ? (
-            <div className="bg-[#1c1916] border-2 border-[#4f4233] rounded-xl p-5 shadow-[0_8px_24px_rgba(0,0,0,0.6)] relative">
-              <div className="absolute top-2.5 right-2.5 screw-head" />
-
-              <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-[#2d251d]">
+            <div className="bg-[#141414] border border-[#2a2a2a] rounded-lg p-4 sm:p-5 space-y-4">
+              <div className="flex items-start justify-between gap-3 pb-3 border-b border-[#202020]">
                 <div>
-                  <h4 className="text-xl font-serif font-black text-[#f9f6f0] m-0">
+                  <h4 className="text-lg font-bold text-white m-0">
                     {activeRoutine.name}
                   </h4>
                   {activeRoutine.description && (
-                    <p className="text-xs text-[#a39786] mt-1 font-sans leading-relaxed">
+                    <p className="text-xs text-[#888888] mt-1 leading-relaxed">
                       {activeRoutine.description}
                     </p>
                   )}
-                  <div className="flex items-center gap-3 mt-2.5 text-xs font-mono font-semibold text-[#cfc5b6]">
-                    <span className="flex items-center gap-1.5 bg-[#141210] px-2.5 py-1 rounded border border-[#2d251d]">
-                      <Clock className="w-3.5 h-3.5 text-amber-500" />
-                      {calculateTotalMinutes(activeRoutine.entries)} MINS TOTAL
+                  <div className="flex items-center gap-2 mt-2 text-xs font-mono text-[#a3a3a3]">
+                    <span className="text-amber-400">
+                      {calculateTotalMinutes(activeRoutine.entries)}m total
                     </span>
                     <span>•</span>
-                    <span>{activeRoutine.entries.length} Drills</span>
+                    <span>{activeRoutine.entries.length} items</span>
                   </div>
                 </div>
 
@@ -182,10 +174,10 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                   <button
                     type="button"
                     onClick={() => handleStartEdit(activeRoutine)}
-                    className="p-2 rounded-lg bg-[#25201a] hover:bg-[#302922] border border-[#3d3326] text-[#c9bea8] hover:text-[#f0ebe1] transition-colors cursor-pointer"
-                    title="Edit Sequence"
+                    className="p-1.5 rounded bg-[#1c1c1c] hover:bg-[#262626] border border-[#2e2e2e] text-[#a3a3a3] hover:text-white transition-colors cursor-pointer"
+                    title="Edit Routine"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
@@ -193,38 +185,38 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                       soundEngine.playMechanicalClick('stomp');
                       onSwitchToPractice();
                     }}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-[#141210] font-mono font-bold text-xs transition-transform active:translate-y-0.5 shadow-md cursor-pointer"
-                    title="Open in Practice Station"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white hover:bg-[#e5e5e5] text-black font-medium text-xs transition-colors cursor-pointer"
+                    title="Open in Practice Player"
                   >
                     <Play className="w-3.5 h-3.5 fill-current" />
-                    <span>Engage Bench</span>
+                    <span>Practice</span>
                   </button>
                 </div>
               </div>
 
               {/* Items in active routine */}
-              <div className="mt-4 space-y-2">
-                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#7d7262] px-1">
-                  SEQUENCE EXERCISES
+              <div className="space-y-1.5">
+                <div className="text-[11px] font-mono text-[#666666] mb-1">
+                  Exercises
                 </div>
-                <div className="space-y-1.5 max-h-[460px] overflow-y-auto pr-1">
+                <div className="space-y-1 max-h-[440px] overflow-y-auto pr-1">
                   {activeRoutine.entries.map((entry, idx) => {
                     const item = items.find((i) => i.id === entry.itemId);
                     if (!item) return null;
                     return (
                       <div
                         key={idx}
-                        className="p-2.5 rounded-lg bg-[#141210] border border-[#2d251d] flex items-center justify-between gap-3 text-xs"
+                        className="p-2 rounded bg-[#181818] border border-[#222222] flex items-center justify-between gap-3 text-xs"
                       >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <span className="w-5 h-5 rounded bg-[#241e17] text-[#c9bea8] font-mono flex items-center justify-center text-[10px] font-bold border border-[#3d3326]">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="w-5 h-5 rounded bg-[#222222] text-[#888888] font-mono flex items-center justify-center text-[10px]">
                             {idx + 1}
                           </span>
-                          <span className="font-semibold text-[#f0ebe1] truncate">
+                          <span className="font-medium text-[#d4d4d4] truncate">
                             <ChordText text={item.name} />
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono text-amber-400 bg-[#241e17] px-2 py-0.5 rounded border border-[#3d3326] flex-shrink-0">
+                        <span className="text-[11px] font-mono text-[#888888] flex-shrink-0">
                           {entry.minutes}m
                         </span>
                       </div>
@@ -234,49 +226,47 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
               </div>
             </div>
           ) : (
-            <div className="p-8 text-center bg-[#1c1916] rounded-xl border border-[#383025] text-[#8c8070] text-xs font-mono">
-              No routine active. Select one from the saved sequences below.
+            <div className="p-8 text-center bg-[#141414] rounded-lg border border-[#222222] text-[#737373] text-xs">
+              No active routine selected.
             </div>
           )}
         </div>
 
         {/* Right Column: Inactive Routines */}
-        <div className="lg:col-span-6 space-y-3">
+        <div className="lg:col-span-6 space-y-2.5">
           <div className="flex items-center gap-2">
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[#8c8070] m-0">
-              SAVED PRESETS ARCHIVE ({inactiveRoutines.length})
+            <h3 className="text-xs font-mono uppercase tracking-wider text-[#737373] m-0">
+              Other Routines ({inactiveRoutines.length})
             </h3>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             {inactiveRoutines.map((routine) => {
               const totalMins = calculateTotalMinutes(routine.entries);
               return (
                 <div
                   key={routine.id}
-                  className="bg-[#191613] border border-[#332c23] rounded-xl p-4 shadow-md hover:border-[#473d31] transition-colors"
+                  className="bg-[#141414] border border-[#222222] hover:border-[#2e2e2e] rounded-lg p-3.5 transition-colors"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h4 className="text-base font-serif font-bold text-[#e8e2d8] m-0">
+                      <h4 className="text-sm font-semibold text-white m-0">
                         {routine.name}
                       </h4>
                       {routine.description && (
-                        <p className="text-xs text-[#8c8070] mt-0.5 line-clamp-1 font-sans">
+                        <p className="text-xs text-[#737373] mt-0.5 line-clamp-1">
                           {routine.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-2.5 mt-2 text-xs font-mono text-[#a39786]">
-                        <span className="flex items-center gap-1 font-bold text-amber-500">
-                          <Clock className="w-3 h-3" />
-                          {totalMins} MINS
+                      <div className="flex items-center gap-2 mt-1.5 text-xs font-mono text-[#888888]">
+                        <span className="text-amber-400 font-medium">
+                          {totalMins}m
                         </span>
                         <span>•</span>
-                        <span>{routine.entries.length} Drills</span>
+                        <span>{routine.entries.length} exercises</span>
                       </div>
                     </div>
 
-                    {/* Action buttons: Activate (+), Edit, Delete */}
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       <button
                         type="button"
@@ -284,18 +274,17 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                           soundEngine.playMechanicalClick('stomp');
                           activateRoutine(routine.id);
                         }}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#27211b] hover:bg-emerald-700 text-emerald-400 hover:text-white border border-[#3d3326] font-mono font-bold text-xs transition-colors shadow-sm cursor-pointer"
-                        title="Mount Routine to Bench"
+                        className="px-2.5 py-1 rounded bg-[#202020] hover:bg-emerald-600 hover:text-white text-[#d4d4d4] text-xs font-medium transition-colors cursor-pointer"
+                        title="Set as active routine"
                       >
-                        <CheckCircle className="w-3.5 h-3.5" />
-                        <span>Mount</span>
+                        Activate
                       </button>
 
                       <button
                         type="button"
                         onClick={() => handleStartEdit(routine)}
-                        className="p-1.5 rounded-lg bg-[#241e17] hover:bg-[#2e261d] border border-[#382f23] text-[#c9bea8] transition-colors cursor-pointer"
-                        title="Edit Routine"
+                        className="p-1.5 rounded bg-[#1c1c1c] hover:bg-[#262626] border border-[#262626] text-[#888888] hover:text-white transition-colors cursor-pointer"
+                        title="Edit"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
@@ -308,8 +297,8 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                             deleteRoutine(routine.id);
                           }
                         }}
-                        className="p-1.5 rounded-lg bg-[#241e17] hover:bg-[#331717] border border-[#382f23] text-[#7d7262] hover:text-[#e07b7b] transition-colors cursor-pointer"
-                        title="Delete Routine"
+                        className="p-1.5 rounded bg-[#1c1c1c] hover:bg-rose-950/60 border border-[#262626] text-[#737373] hover:text-rose-400 transition-colors cursor-pointer"
+                        title="Delete"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -320,8 +309,8 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
             })}
 
             {inactiveRoutines.length === 0 && (
-              <div className="p-8 text-center bg-[#191613] rounded-xl border border-[#2d251d] text-[#7d7262] text-xs font-mono">
-                No archived routines. Use "New Sequence" above to construct practice variations.
+              <div className="p-6 text-center bg-[#141414] rounded-lg border border-[#222222] text-[#666666] text-xs">
+                No inactive routines. Use "New Routine" to create variations.
               </div>
             )}
           </div>
@@ -330,17 +319,14 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
 
       {/* Routine Editor Modal */}
       {editingRoutine && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-150">
-          <div className="bg-[#1c1916] border-2 border-[#4f4233] rounded-xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden relative">
-            <div className="absolute top-2.5 left-2.5 screw-head" />
-            <div className="absolute top-2.5 right-2.5 screw-head" />
-
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-100">
+          <div className="bg-[#171717] border border-[#2a2a2a] rounded-lg max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 px-6 border-b border-[#2d251d] bg-[#141210]">
+            <div className="flex items-center justify-between p-4 border-b border-[#222222]">
               <div className="flex items-center gap-2">
-                <ListOrdered className="w-4 h-4 text-amber-500" />
-                <h3 className="text-sm font-mono font-bold uppercase tracking-wider text-[#f5f1ea] m-0">
-                  {isNewRoutine ? 'CONSTRUCT PRACTICE SEQUENCE' : 'EDIT PRACTICE SEQUENCE'}
+                <ListOrdered className="w-4 h-4 text-amber-400" />
+                <h3 className="text-sm font-semibold text-white m-0">
+                  {isNewRoutine ? 'Create Practice Routine' : 'Edit Practice Routine'}
                 </h3>
               </div>
               <button
@@ -349,19 +335,18 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                   soundEngine.playMechanicalClick('toggle');
                   setEditingRoutine(null);
                 }}
-                className="p-1 rounded text-[#8c8070] hover:text-[#f5f1ea] transition-colors cursor-pointer"
+                className="p-1 rounded text-[#737373] hover:text-white cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-5 overflow-y-auto space-y-4 flex-1">
-              {/* Routine metadata */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 text-xs">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                    SEQUENCE NAME
+                  <label className="block text-[11px] text-[#888888] mb-1">
+                    Routine Name
                   </label>
                   <input
                     type="text"
@@ -369,13 +354,13 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                     onChange={(e) =>
                       setEditingRoutine({ ...editingRoutine, name: e.target.value })
                     }
-                    className="w-full bg-[#141210] border border-[#382f23] rounded-lg px-3 py-2 text-xs text-[#f5f1ea] font-mono focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
                     placeholder="e.g. Daily Warmup & Barre Chords"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070] mb-1">
-                    SESSION FOCUS / OBJECTIVE
+                  <label className="block text-[11px] text-[#888888] mb-1">
+                    Description (optional)
                   </label>
                   <input
                     type="text"
@@ -383,27 +368,27 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                     onChange={(e) =>
                       setEditingRoutine({ ...editingRoutine, description: e.target.value })
                     }
-                    className="w-full bg-[#141210] border border-[#382f23] rounded-lg px-3 py-2 text-xs text-[#f5f1ea] font-sans focus:outline-none focus:border-amber-500"
-                    placeholder="e.g. Clean chord changes and finger independence"
+                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                    placeholder="e.g. Focus on clean chord changes"
                   />
                 </div>
               </div>
 
-              {/* Routine Total Minutes Banner */}
-              <div className="bg-[#141210] border border-[#2d251d] rounded-lg p-3 flex items-center justify-between text-xs">
-                <span className="text-[#8c8070] font-mono">Calculated Routine Duration:</span>
-                <span className="font-mono font-bold text-amber-400 text-sm">
-                  {calculateTotalMinutes(editingRoutine.entries)} MINS
+              {/* Total Minutes Banner */}
+              <div className="bg-[#121212] border border-[#222222] rounded p-2.5 flex items-center justify-between text-xs">
+                <span className="text-[#888888]">Total Routine Duration:</span>
+                <span className="font-mono text-amber-400 font-medium">
+                  {calculateTotalMinutes(editingRoutine.entries)} mins
                 </span>
               </div>
 
-              {/* Entries List with Reorder & Duration Controls */}
-              <div className="space-y-2">
-                <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070]">
-                  ROSTER OF EXERCISES ({editingRoutine.entries.length})
+              {/* Entries List */}
+              <div className="space-y-1.5">
+                <div className="text-[11px] font-mono text-[#888888]">
+                  Exercises ({editingRoutine.entries.length})
                 </div>
 
-                <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-52 overflow-y-auto pr-1">
                   {editingRoutine.entries.map((entry, idx) => {
                     const item = items.find((i) => i.id === entry.itemId);
                     if (!item) return null;
@@ -411,21 +396,19 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                     return (
                       <div
                         key={idx}
-                        className="bg-[#141210] border border-[#2d251d] rounded-lg p-2.5 flex items-center justify-between gap-2 text-xs"
+                        className="bg-[#121212] border border-[#222222] rounded p-2 flex items-center justify-between gap-2 text-xs"
                       >
-                        {/* Order & Title */}
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="w-5 h-5 rounded bg-[#241e17] text-[#c9bea8] font-mono flex items-center justify-center text-[10px] font-bold border border-[#382f23]">
+                          <span className="w-5 h-5 rounded bg-[#1e1e1e] text-[#888888] font-mono flex items-center justify-center text-[10px]">
                             {idx + 1}
                           </span>
-                          <span className="font-semibold text-[#f0ebe1] truncate">
+                          <span className="font-medium text-[#d4d4d4] truncate">
                             {item.name}
                           </span>
                         </div>
 
-                        {/* Minutes adjustment + Move + Remove */}
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <div className="flex items-center gap-1 bg-[#1a1714] border border-[#382f23] rounded px-2 py-0.5">
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          <div className="flex items-center gap-1 bg-[#1a1a1a] border border-[#2e2e2e] rounded px-1.5 py-0.5">
                             <input
                               type="number"
                               min="1"
@@ -434,39 +417,37 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                               onChange={(e) =>
                                 handleUpdateEntryMinutes(idx, parseInt(e.target.value) || 1)
                               }
-                              className="w-10 bg-transparent text-center font-mono font-bold text-amber-400 text-xs focus:outline-none"
+                              className="w-8 bg-transparent text-center font-mono text-amber-400 text-xs focus:outline-none"
                             />
-                            <span className="text-[#7d7262] text-[10px] font-mono">min</span>
+                            <span className="text-[#666666] text-[10px]">m</span>
                           </div>
 
                           {/* Reorder Buttons */}
-                          <div className="flex items-center">
-                            <button
-                              type="button"
-                              disabled={idx === 0}
-                              onClick={() => handleMoveEntry(idx, 'up')}
-                              className="p-1 text-[#8c8070] hover:text-[#f0ebe1] disabled:opacity-20 cursor-pointer"
-                              title="Move Up"
-                            >
-                              <ArrowUp className="w-3.5 h-3.5" />
-                            </button>
-                            <button
-                              type="button"
-                              disabled={idx === editingRoutine.entries.length - 1}
-                              onClick={() => handleMoveEntry(idx, 'down')}
-                              className="p-1 text-[#8c8070] hover:text-[#f0ebe1] disabled:opacity-20 cursor-pointer"
-                              title="Move Down"
-                            >
-                              <ArrowDown className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => handleMoveEntry(idx, 'up')}
+                            className="p-1 text-[#737373] hover:text-white disabled:opacity-20 cursor-pointer"
+                            title="Move Up"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === editingRoutine.entries.length - 1}
+                            onClick={() => handleMoveEntry(idx, 'down')}
+                            className="p-1 text-[#737373] hover:text-white disabled:opacity-20 cursor-pointer"
+                            title="Move Down"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
 
                           {/* Remove */}
                           <button
                             type="button"
                             onClick={() => handleRemoveEntry(idx)}
-                            className="p-1 text-[#a85050] hover:text-rose-400 cursor-pointer"
-                            title="Remove drill"
+                            className="p-1 text-[#737373] hover:text-rose-400 cursor-pointer"
+                            title="Remove"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -476,29 +457,29 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                   })}
 
                   {editingRoutine.entries.length === 0 && (
-                    <div className="p-4 text-center text-[#7d7262] text-xs font-mono italic">
-                      No exercises enrolled yet. Select drills from the catalog below.
+                    <div className="p-4 text-center text-[#666666] text-xs italic">
+                      No exercises added yet. Select exercises from the list below.
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* Add Items from Catalog Section */}
-              <div className="border-t border-[#2d251d] pt-3 space-y-2">
+              {/* Add Items from Library */}
+              <div className="border-t border-[#222222] pt-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#8c8070]">
-                    ADD FROM EXERCISE CATALOG
+                  <span className="text-[11px] font-mono text-[#888888]">
+                    Add Exercises
                   </span>
                   <input
                     type="text"
                     value={searchItemTerm}
                     onChange={(e) => setSearchItemTerm(e.target.value)}
-                    placeholder="Search drill..."
-                    className="bg-[#141210] border border-[#382f23] rounded px-2.5 py-1 text-xs text-[#f0ebe1] font-mono focus:outline-none focus:border-amber-500 w-44"
+                    placeholder="Search exercise..."
+                    className="bg-[#121212] border border-[#2a2a2a] rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-amber-400 w-40"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto pr-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-40 overflow-y-auto pr-1">
                   {activeLibraryItems
                     .filter((item) =>
                       item.name.toLowerCase().includes(searchItemTerm.toLowerCase())
@@ -508,12 +489,12 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
                         key={item.id}
                         type="button"
                         onClick={() => handleAddItemToRoutine(item.id)}
-                        className="p-2 rounded-lg bg-[#141210] hover:bg-[#252019] border border-[#2d251d] hover:border-[#42372a] text-left flex items-center justify-between text-xs transition-colors cursor-pointer group"
+                        className="p-2 rounded bg-[#121212] hover:bg-[#1a1a1a] border border-[#202020] hover:border-[#2e2e2e] text-left flex items-center justify-between text-xs transition-colors cursor-pointer group"
                       >
-                        <span className="text-[#d6cdbe] group-hover:text-amber-400 font-medium truncate">
+                        <span className="text-[#a3a3a3] group-hover:text-white truncate">
                           {item.name}
                         </span>
-                        <span className="flex items-center gap-1 text-[10px] font-mono text-[#7d7262] flex-shrink-0">
+                        <span className="text-[10px] font-mono text-[#666666] flex-shrink-0">
                           +{item.defaultMinutes}m
                         </span>
                       </button>
@@ -523,24 +504,24 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-[#2d251d] bg-[#141210] flex items-center justify-end gap-3">
+            <div className="p-3 px-5 border-t border-[#222222] bg-[#141414] flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => {
                   soundEngine.playMechanicalClick('toggle');
                   setEditingRoutine(null);
                 }}
-                className="px-4 py-2 rounded-lg text-xs font-mono font-semibold text-[#8c8070] hover:text-[#f0ebe1] transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded text-xs text-[#888888] hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSaveEditor}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-[#141210] font-mono font-bold text-xs uppercase tracking-wider shadow-md transition-transform active:translate-y-0.5 cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-1.5 rounded bg-white hover:bg-[#e5e5e5] text-black font-medium text-xs transition-colors cursor-pointer"
               >
-                <Save className="w-4 h-4" />
-                <span>Save Sequence</span>
+                <Save className="w-3.5 h-3.5" />
+                <span>Save Routine</span>
               </button>
             </div>
           </div>
