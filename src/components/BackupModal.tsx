@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Upload, RotateCcw, X, Copy, Check, Settings, Sliders } from 'lucide-react';
+import { Download, Upload, RotateCcw, X, Copy, Check, Sliders } from 'lucide-react';
 import { usePractice } from '../context/usePractice';
 import { soundEngine } from '../utils/audio';
 

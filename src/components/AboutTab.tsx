@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Shield, Flame, Target, Compass, Sparkles } from 'lucide-react';
+import { BookOpen, Shield } from 'lucide-react';
 
 export const AboutTab: React.FC = () => {
   return (

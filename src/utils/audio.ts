@@ -6,14 +6,16 @@ class AudioEngine {
 
   private getContext(): AudioContext {
     if (!this.ctx) {
-      const win = typeof window !== 'undefined' ? window : (globalThis as unknown as Window);
-      const AudioCtx = win.AudioContext || (win as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const win = typeof window !== 'undefined'
+        ? (window as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext })
+        : (globalThis as unknown as { AudioContext?: typeof AudioContext; webkitAudioContext?: typeof AudioContext });
+      const AudioCtx = win.AudioContext || win.webkitAudioContext;
       if (!AudioCtx) {
         throw new Error('AudioContext unavailable in current environment');
       }
       this.ctx = new AudioCtx();
     }
-    if (this.ctx && this.ctx.state === 'suspended') {
+    if (this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
     return this.ctx;
