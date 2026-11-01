@@ -92,7 +92,7 @@ export const ChordText: React.FC<ChordTextProps> = ({ text, className = '', chor
               key={idx}
               type="button"
               onClick={(e) => handleChordClick(token.text, e)}
-              className={`inline-flex items-center px-1.5 py-0.5 mx-0.5 text-xs md:text-sm font-mono font-bold rounded bg-[#29221b] text-amber-400 border border-[#4a3d2e] hover:border-amber-500 hover:bg-[#332b22] transition-colors cursor-pointer ${chordClassName}`}
+              className={`inline-flex items-center px-1.5 py-0.5 mx-0.5 text-xs sm:text-[13px] font-mono font-semibold rounded bg-amber-500/15 text-amber-300 border border-amber-500/30 hover:border-amber-400 hover:bg-amber-500/25 transition-colors cursor-pointer ${chordClassName}`}
               title={`View ${token.text} fretboard chart`}
             >
               {token.text}
@@ -104,7 +104,7 @@ export const ChordText: React.FC<ChordTextProps> = ({ text, className = '', chor
           return (
             <span
               key={idx}
-              className="inline-block px-1 text-amber-500/80 font-bold select-none text-xs md:text-sm"
+              className="inline-block px-1 text-neutral-400 font-semibold select-none text-xs sm:text-sm"
             >
               {token.text}
             </span>

@@ -90,14 +90,14 @@ export const ItemsTab: React.FC = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-5">
+    <div className="max-w-6xl mx-auto space-y-6">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-[#222222]">
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#262626]">
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight m-0">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight m-0">
             Exercise Library
           </h2>
-          <p className="text-xs text-[#888888] mt-1 font-sans">
+          <p className="text-sm text-neutral-400 mt-1.5 font-sans">
             Manage your personal library of guitar drills, chord changes, and song exercises.
           </p>
         </div>
@@ -105,7 +105,7 @@ export const ItemsTab: React.FC = () => {
         <button
           type="button"
           onClick={handleOpenNew}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white hover:bg-[#e5e5e5] text-black font-medium text-xs transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-sm transition-colors cursor-pointer shadow-sm"
         >
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>New Exercise</span>
@@ -113,20 +113,20 @@ export const ItemsTab: React.FC = () => {
       </div>
 
       {/* Tabs & Search Navigation Bar */}
-      <div className="space-y-3">
+      <div className="space-y-3.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Active vs Archived Selector */}
-          <div className="flex items-center gap-1 bg-[#141414] p-1 rounded-md border border-[#262626]">
+          <div className="flex items-center gap-1 bg-[#141414] p-1 rounded-lg border border-[#2a2a2a]">
             <button
               type="button"
               onClick={() => {
                 soundEngine.playMechanicalClick('toggle');
                 setActiveTab('active');
               }}
-              className={`px-3 py-1 text-xs rounded transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs sm:text-sm rounded-md transition-colors cursor-pointer ${
                 activeTab === 'active'
-                  ? 'bg-[#242424] text-white font-medium'
-                  : 'text-[#888888] hover:text-white'
+                  ? 'bg-[#262626] text-white font-semibold shadow-sm'
+                  : 'text-neutral-400 hover:text-white font-medium'
               }`}
             >
               Active ({activeItems.length})
@@ -137,10 +137,10 @@ export const ItemsTab: React.FC = () => {
                 soundEngine.playMechanicalClick('toggle');
                 setActiveTab('archived');
               }}
-              className={`px-3 py-1 text-xs rounded transition-colors cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs sm:text-sm rounded-md transition-colors cursor-pointer ${
                 activeTab === 'archived'
-                  ? 'bg-[#242424] text-white font-medium'
-                  : 'text-[#888888] hover:text-white'
+                  ? 'bg-[#262626] text-white font-semibold shadow-sm'
+                  : 'text-neutral-400 hover:text-white font-medium'
               }`}
             >
               Archived ({archivedItems.length})
@@ -148,20 +148,20 @@ export const ItemsTab: React.FC = () => {
           </div>
 
           {/* Search Box */}
-          <div className="relative w-full sm:w-60">
-            <Search className="w-3.5 h-3.5 text-[#666666] absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="relative w-full sm:w-72">
+            <Search className="w-4 h-4 text-neutral-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Filter exercises..."
-              className="w-full bg-[#141414] border border-[#262626] rounded-md pl-8 pr-3 py-1.5 text-xs text-white placeholder-[#555555] focus:outline-none focus:border-amber-400"
+              className="w-full bg-[#141414] border border-[#2a2a2a] rounded-lg pl-9 pr-3.5 py-2 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-400 transition-colors"
             />
           </div>
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
           {['All', ...CATEGORIES].map((cat) => (
             <button
               key={cat}
@@ -170,10 +170,10 @@ export const ItemsTab: React.FC = () => {
                 soundEngine.playMechanicalClick('toggle');
                 setSelectedCategory(cat);
               }}
-              className={`px-2.5 py-1 rounded text-xs transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all cursor-pointer font-medium ${
                 selectedCategory === cat
-                  ? 'bg-[#242424] text-white font-medium border border-[#333333]'
-                  : 'bg-[#141414] text-[#737373] border border-[#222222] hover:text-[#d4d4d4]'
+                  ? 'bg-neutral-100 text-neutral-950 font-bold shadow-sm'
+                  : 'bg-[#161616] text-neutral-300 border border-[#2a2a2a] hover:bg-[#222222] hover:text-white'
               }`}
             >
               {cat}
@@ -183,41 +183,41 @@ export const ItemsTab: React.FC = () => {
       </div>
 
       {/* Exercises List */}
-      <div className="space-y-2">
+      <div className="space-y-2.5">
         {displayedList.map((item) => {
           const isExpanded = expandedItemId === item.id;
 
           return (
             <div
               key={item.id}
-              className="bg-[#141414] border border-[#222222] hover:border-[#2e2e2e] rounded-lg p-3.5 transition-colors"
+              className="bg-[#141414] border border-[#242424] hover:border-[#333333] rounded-xl p-4 sm:p-5 transition-all shadow-sm"
             >
               <div className="flex flex-wrap items-center justify-between gap-3">
                 {/* Left details */}
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <button
                     type="button"
                     onClick={() => {
                       soundEngine.playMechanicalClick('toggle');
                       setExpandedItemId(isExpanded ? null : item.id);
                     }}
-                    className="p-1 rounded text-[#737373] hover:text-white transition-colors cursor-pointer"
+                    className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer flex-shrink-0"
                     title={isExpanded ? 'Collapse' : 'Expand'}
                   >
-                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
 
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-white flex items-center gap-2">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-base sm:text-[17px] font-bold text-white flex flex-wrap items-center gap-2.5 tracking-tight">
                       <ChordText text={item.name} />
                       {item.category && (
-                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#1f1f1f] text-[#888888]">
+                        <span className="text-xs font-mono font-medium px-2.5 py-0.5 rounded-full bg-[#202020] text-neutral-300 border border-[#333333]">
                           {item.category}
                         </span>
                       )}
                     </div>
                     {item.notes && !isExpanded && (
-                      <p className="text-xs text-[#666666] truncate max-w-lg mt-0.5 m-0 font-sans">
+                      <p className="text-[13px] sm:text-sm text-neutral-400 truncate max-w-xl mt-1 m-0 font-sans leading-normal">
                         {item.notes}
                       </p>
                     )}
@@ -226,34 +226,35 @@ export const ItemsTab: React.FC = () => {
 
                 {/* Right controls */}
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="flex items-center gap-1 font-mono text-xs text-[#888888] bg-[#1a1a1a] px-2 py-0.5 rounded">
-                    <Clock className="w-3 h-3 text-[#737373]" />
+                  <span className="flex items-center gap-1.5 font-mono text-xs sm:text-[13px] font-semibold text-amber-300 bg-amber-500/15 border border-amber-500/30 px-2.5 py-1 rounded-md">
+                    <Clock className="w-3.5 h-3.5 text-amber-400" />
                     {item.defaultMinutes}m
                   </span>
 
                   {item.targetBpm && (
-                    <span className="hidden sm:flex items-center gap-1 font-mono text-xs text-[#888888] bg-[#1a1a1a] px-2 py-0.5 rounded">
-                      <Music className="w-3 h-3 text-[#737373]" />
+                    <span className="hidden sm:flex items-center gap-1.5 font-mono text-xs sm:text-[13px] font-semibold text-neutral-200 bg-[#222222] border border-[#383838] px-2.5 py-1 rounded-md">
+                      <Music className="w-3.5 h-3.5 text-neutral-400" />
                       {item.targetBpm} bpm
                     </span>
                   )}
 
                   {item.videoUrl && (
-                    <span className="text-rose-400 p-0.5" title="Video linked">
-                      <Video className="w-3.5 h-3.5" />
+                    <span className="flex items-center gap-1 text-xs font-semibold text-rose-300 bg-rose-500/15 border border-rose-500/30 px-2.5 py-1 rounded-md" title="Video linked">
+                      <Video className="w-3.5 h-3.5 text-rose-400" />
+                      <span className="hidden md:inline">Video</span>
                     </span>
                   )}
 
                   {/* Actions for Active Items */}
                   {activeTab === 'active' ? (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 ml-1">
                       <button
                         type="button"
                         onClick={() => handleOpenEdit(item)}
-                        className="p-1.5 rounded text-[#737373] hover:text-white transition-colors cursor-pointer"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 border border-transparent hover:border-neutral-700 transition-colors cursor-pointer"
                         title="Edit"
                       >
-                        <Edit3 className="w-3.5 h-3.5" />
+                        <Edit3 className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
@@ -261,10 +262,10 @@ export const ItemsTab: React.FC = () => {
                           soundEngine.playMechanicalClick('toggle');
                           duplicateItem(item.id);
                         }}
-                        className="p-1.5 rounded text-[#737373] hover:text-white transition-colors cursor-pointer"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 border border-transparent hover:border-neutral-700 transition-colors cursor-pointer"
                         title="Duplicate"
                       >
-                        <Copy className="w-3.5 h-3.5" />
+                        <Copy className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
@@ -272,25 +273,25 @@ export const ItemsTab: React.FC = () => {
                           soundEngine.playMechanicalClick('toggle');
                           archiveItem(item.id);
                         }}
-                        className="p-1.5 rounded text-[#737373] hover:text-amber-400 transition-colors cursor-pointer"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-amber-400 hover:bg-neutral-800 border border-transparent hover:border-neutral-700 transition-colors cursor-pointer"
                         title="Archive"
                       >
-                        <Archive className="w-3.5 h-3.5" />
+                        <Archive className="w-4 h-4" />
                       </button>
                     </div>
                   ) : (
                     /* Actions for Archived Items */
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 ml-1">
                       <button
                         type="button"
                         onClick={() => {
                           soundEngine.playMechanicalClick('stomp');
                           restoreItem(item.id);
                         }}
-                        className="p-1.5 rounded text-[#737373] hover:text-emerald-400 transition-colors cursor-pointer"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-emerald-400 hover:bg-neutral-800 border border-transparent hover:border-neutral-700 transition-colors cursor-pointer"
                         title="Restore"
                       >
-                        <RotateCcw className="w-3.5 h-3.5" />
+                        <RotateCcw className="w-4 h-4" />
                       </button>
                       <button
                         type="button"
@@ -300,10 +301,10 @@ export const ItemsTab: React.FC = () => {
                             deleteItemPermanently(item.id);
                           }
                         }}
-                        className="p-1.5 rounded text-[#737373] hover:text-rose-400 transition-colors cursor-pointer"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-rose-400 hover:bg-neutral-800 border border-transparent hover:border-neutral-700 transition-colors cursor-pointer"
                         title="Delete Permanently"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   )}
@@ -312,33 +313,33 @@ export const ItemsTab: React.FC = () => {
 
               {/* Inline Expansion Content */}
               {isExpanded && (
-                <div className="mt-3 pt-3 border-t border-[#1f1f1f] text-xs space-y-2 animate-in fade-in duration-100">
+                <div className="mt-4 pt-4 border-t border-[#222222] space-y-3 animate-in fade-in duration-100">
                   {item.notes && (
-                    <div className="bg-[#111111] p-2.5 rounded border border-[#222222]">
-                      <span className="font-mono text-[#737373] text-[10px] block mb-0.5">
-                        Notes
+                    <div className="bg-[#101010] p-3.5 rounded-lg border border-[#262626]">
+                      <span className="font-mono text-neutral-400 text-xs font-semibold uppercase tracking-wider block mb-1">
+                        Notes & Guidance
                       </span>
-                      <p className="text-[#a3a3a3] leading-relaxed m-0">{item.notes}</p>
+                      <p className="text-sm text-neutral-200 leading-relaxed m-0 font-sans">{item.notes}</p>
                     </div>
                   )}
 
                   {item.thingsToRemember && (
-                    <div className="bg-[#111111] p-2.5 rounded border border-[#222222]">
-                      <span className="font-mono text-amber-400 text-[10px] block mb-0.5">
-                        Reminders
+                    <div className="bg-[#101010] p-3.5 rounded-lg border border-[#262626]">
+                      <span className="font-mono text-amber-400 text-xs font-semibold uppercase tracking-wider block mb-1">
+                        Key Reminders
                       </span>
-                      <p className="text-[#d4d4d4] italic m-0">“{item.thingsToRemember}”</p>
+                      <p className="text-sm text-amber-200/90 italic m-0 font-sans">“{item.thingsToRemember}”</p>
                     </div>
                   )}
 
                   {item.videoUrl && (
-                    <div className="text-[11px] text-[#737373] font-mono truncate">
-                      <span>Video:</span>{' '}
+                    <div className="text-xs text-neutral-400 font-mono truncate pt-1">
+                      <span className="font-semibold text-neutral-300">Video:</span>{' '}
                       <a
                         href={item.videoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-amber-400 hover:underline"
+                        className="text-amber-400 hover:text-amber-300 hover:underline"
                       >
                         {item.videoUrl}
                       </a>
@@ -351,7 +352,7 @@ export const ItemsTab: React.FC = () => {
         })}
 
         {displayedList.length === 0 && (
-          <div className="p-8 text-center bg-[#141414] rounded-lg border border-[#222222] text-[#737373] text-xs">
+          <div className="p-10 text-center bg-[#141414] rounded-xl border border-[#242424] text-neutral-400 text-sm">
             No exercises match your search or filter criteria.
           </div>
         )}
@@ -360,9 +361,9 @@ export const ItemsTab: React.FC = () => {
       {/* Item Editor Modal */}
       {editingItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 animate-in fade-in duration-100">
-          <div className="bg-[#171717] border border-[#2a2a2a] rounded-lg max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b border-[#222222]">
-              <h3 className="text-sm font-semibold text-white m-0">
+          <div className="bg-[#141414] border border-[#2c2c2c] rounded-xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between p-4 px-6 border-b border-[#242424]">
+              <h3 className="text-base font-bold text-white m-0">
                 {isNew ? 'Create New Exercise' : 'Edit Exercise'}
               </h3>
               <button
@@ -371,15 +372,15 @@ export const ItemsTab: React.FC = () => {
                   soundEngine.playMechanicalClick('toggle');
                   setEditingItem(null);
                 }}
-                className="p-1 rounded text-[#737373] hover:text-white cursor-pointer"
+                className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-4 sm:p-5 overflow-y-auto space-y-3.5 flex-1 text-xs">
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-4 flex-1 text-sm">
               <div>
-                <label className="block text-[11px] text-[#888888] mb-1">
+                <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                   Exercise Name
                 </label>
                 <input
@@ -387,14 +388,14 @@ export const ItemsTab: React.FC = () => {
                   value={editingItem.name}
                   onChange={(e) => setEditingItem({ ...editingItem, name: e.target.value })}
                   placeholder="e.g. C ↔ F Chord changes, 1 min"
-                  className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                  className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg px-3.5 py-2 text-sm text-neutral-100 focus:outline-none focus:border-amber-400"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] text-[#888888] mb-1">
-                    Default Duration (mins)
+                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Duration (mins)
                   </label>
                   <input
                     type="number"
@@ -407,12 +408,12 @@ export const ItemsTab: React.FC = () => {
                         defaultMinutes: Math.max(1, parseInt(e.target.value) || 1),
                       })
                     }
-                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400"
+                    className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg px-3.5 py-2 text-sm font-mono text-neutral-100 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-[#888888] mb-1">
+                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
                     Category
                   </label>
                   <select
@@ -423,7 +424,7 @@ export const ItemsTab: React.FC = () => {
                         category: e.target.value as ItemCategory,
                       })
                     }
-                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer"
+                    className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg px-3.5 py-2 text-sm text-neutral-100 focus:outline-none focus:border-amber-400 cursor-pointer"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -434,10 +435,10 @@ export const ItemsTab: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-[11px] text-[#888888] mb-1">
-                    Metronome BPM (optional)
+                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Metronome BPM (opt)
                   </label>
                   <input
                     type="number"
@@ -451,13 +452,13 @@ export const ItemsTab: React.FC = () => {
                       })
                     }
                     placeholder="e.g. 80"
-                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400"
+                    className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg px-3.5 py-2 text-sm font-mono text-neutral-100 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-[#888888] mb-1">
-                    Video Link (optional)
+                  <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                    Video Link (opt)
                   </label>
                   <input
                     type="text"
@@ -466,27 +467,27 @@ export const ItemsTab: React.FC = () => {
                       setEditingItem({ ...editingItem, videoUrl: e.target.value })
                     }
                     placeholder="https://youtube.com/..."
-                    className="w-full bg-[#121212] border border-[#2a2a2a] rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                    className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg px-3.5 py-2 text-sm text-neutral-100 focus:outline-none focus:border-amber-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] text-[#888888] mb-1">
-                  Notes
+                <label className="block text-xs font-semibold text-neutral-300 uppercase tracking-wider mb-1.5">
+                  Notes & Technique
                 </label>
                 <textarea
                   value={editingItem.notes}
                   onChange={(e) => setEditingItem({ ...editingItem, notes: e.target.value })}
                   rows={2}
                   placeholder="Technique tips, finger placements..."
-                  className="w-full bg-[#121212] border border-[#2a2a2a] rounded p-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                  className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg p-3 text-sm text-neutral-100 focus:outline-none focus:border-amber-400"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] text-amber-400 mb-1">
-                  Reminders (Key Cues)
+                <label className="block text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1.5">
+                  Key Reminders (Cues)
                 </label>
                 <textarea
                   value={editingItem.thingsToRemember}
@@ -495,28 +496,28 @@ export const ItemsTab: React.FC = () => {
                   }
                   rows={2}
                   placeholder="e.g. Keep thumb behind fretboard..."
-                  className="w-full bg-[#121212] border border-[#2a2a2a] rounded p-2 text-xs text-amber-200 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-[#101010] border border-[#2c2c2c] rounded-lg p-3 text-sm text-amber-200 focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>
 
-            <div className="p-3 px-5 border-t border-[#222222] bg-[#141414] flex items-center justify-end gap-2">
+            <div className="p-4 px-6 border-t border-[#242424] bg-[#121212] flex items-center justify-end gap-3">
               <button
                 type="button"
                 onClick={() => {
                   soundEngine.playMechanicalClick('toggle');
                   setEditingItem(null);
                 }}
-                className="px-3 py-1.5 rounded text-xs text-[#888888] hover:text-white cursor-pointer"
+                className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-400 hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleSaveItem}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded bg-white hover:bg-[#e5e5e5] text-black font-medium text-xs transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-white hover:bg-neutral-200 text-neutral-950 font-semibold text-sm transition-colors cursor-pointer shadow-sm"
               >
-                <Save className="w-3.5 h-3.5" />
+                <Save className="w-4 h-4" />
                 <span>Save Exercise</span>
               </button>
             </div>
