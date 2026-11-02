@@ -1,6 +1,7 @@
-import React from 'react';
-import { Play, Pause, RotateCcw, CheckCircle2, FastForward } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Play, Pause, RotateCcw, CheckCircle2, FastForward, Rewind } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
+import { formatTime, parseTimeToSeconds } from '../utils/time';
 
 interface TimerRingProps {
   secondsLeft: number;
@@ -10,8 +11,12 @@ interface TimerRingProps {
   onPause: () => void;
   onReset: () => void;
   onMarkDoneFullTime: () => void;
+  onPrev?: () => void;
   onSkip?: () => void;
+  hasPrev?: boolean;
+  hasNext?: boolean;
   onAdjustSeconds?: (deltaSecs: number) => void;
+  onSetSeconds?: (secs: number) => void;
 }
 
 export const TimerRing: React.FC<TimerRingProps> = ({
@@ -22,14 +27,54 @@ export const TimerRing: React.FC<TimerRingProps> = ({
   onPause,
   onReset,
   onMarkDoneFullTime,
+  onPrev,
   onSkip,
+  hasPrev,
+  hasNext,
   onAdjustSeconds,
+  onSetSeconds,
 }) => {
-  // Format MM:SS
-  const formatTime = (secs: number) => {
-    const mins = Math.floor(secs / 60);
-    const remSecs = secs % 60;
-    return `${mins.toString().padStart(2, '0')}:${remSecs.toString().padStart(2, '0')}`;
+  const [isEditingTime, setIsEditingTime] = useState(false);
+  const [editInputValue, setEditInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleStartEditing = () => {
+    if (isRunning) {
+      onPause();
+    }
+    setEditInputValue(formatTime(secondsLeft));
+    setIsEditingTime(true);
+  };
+
+  useEffect(() => {
+    if (isEditingTime) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [isEditingTime]);
+
+  const handleCommitEdit = () => {
+    if (!isEditingTime) return;
+    const parsed = parseTimeToSeconds(editInputValue);
+    if (parsed !== null && parsed >= 0) {
+      soundEngine.playMechanicalClick('toggle');
+      onSetSeconds?.(parsed);
+    }
+    setIsEditingTime(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingTime(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCommitEdit();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      handleCancelEdit();
+    }
   };
 
   // Minimal circular progress geometry
@@ -74,12 +119,40 @@ export const TimerRing: React.FC<TimerRingProps> = ({
         </svg>
 
         {/* Center Readout & Main Action */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-          <div className="text-4xl sm:text-5xl font-mono font-medium tracking-tight text-white">
-            {formatTime(secondsLeft)}
-          </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3">
+          {isEditingTime ? (
+            <div className="relative flex flex-col items-center z-20">
+              <input
+                ref={inputRef}
+                type="text"
+                value={editInputValue}
+                onChange={(e) => setEditInputValue(e.target.value)}
+                onBlur={handleCommitEdit}
+                onKeyDown={handleKeyDown}
+                placeholder="03:00"
+                className="w-32 sm:w-36 text-center font-mono text-3xl sm:text-4xl font-semibold text-white bg-[#141414] border-2 border-amber-500 rounded-lg px-1.5 py-0.5 outline-none shadow-lg shadow-amber-500/20"
+              />
+              <span className="text-[10px] font-mono text-amber-400 mt-1 bg-[#1c1c1c] px-2 py-0.5 rounded border border-[#2e2e2e]">
+                ↵ save • esc cancel
+              </span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleStartEditing}
+              className="group/time relative flex items-center justify-center cursor-pointer rounded-lg px-2.5 py-0.5 transition-all hover:bg-white/5 active:scale-95"
+              title="Click on time to edit (e.g. 5:00, 2:30, 45s, 10)"
+            >
+              <span className="text-4xl sm:text-5xl font-mono font-medium tracking-tight text-white group-hover/time:text-amber-400 transition-colors">
+                {formatTime(secondsLeft)}
+              </span>
+              <span className="opacity-0 group-hover/time:opacity-100 transition-opacity absolute -top-3.5 right-0 text-[10px] font-mono text-amber-400 bg-[#222222] border border-[#333333] px-1.5 py-0.2 rounded shadow">
+                edit ✎
+              </span>
+            </button>
+          )}
 
-          <div className="text-[11px] font-mono text-[#888888] mt-1">
+          <div className="text-[11px] font-mono text-[#888888] mt-0.5">
             {isRunning ? (
               <span className="text-amber-400">active</span>
             ) : secondsLeft === 0 ? (
@@ -100,7 +173,7 @@ export const TimerRing: React.FC<TimerRingProps> = ({
                 onPlay();
               }
             }}
-            className={`mt-3 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-transform active:scale-95 ${
+            className={`mt-2.5 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer transition-transform active:scale-95 ${
               isRunning
                 ? 'bg-amber-400 hover:bg-amber-300 text-black'
                 : 'bg-white hover:bg-[#e5e5e5] text-black'
@@ -116,8 +189,8 @@ export const TimerRing: React.FC<TimerRingProps> = ({
         </div>
       </div>
 
-      {/* Minimal Stepper Controls */}
-      <div className="flex items-center gap-1.5 mt-3 text-xs">
+      {/* Stepper Controls */}
+      <div className="flex items-center gap-1.5 mt-3 text-xs flex-wrap justify-center">
         {onAdjustSeconds && (
           <>
             <button
@@ -158,14 +231,31 @@ export const TimerRing: React.FC<TimerRingProps> = ({
           <span>Reset</span>
         </button>
 
+        {onPrev && (
+          <button
+            type="button"
+            disabled={hasPrev === false}
+            onClick={() => {
+              soundEngine.playMechanicalClick('toggle');
+              onPrev();
+            }}
+            className="px-2.5 py-1 rounded bg-[#181818] hover:bg-[#222222] border border-[#262626] text-[#888888] hover:text-white text-[11px] flex items-center gap-1 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            title="Previous exercise"
+          >
+            <Rewind className="w-3 h-3" />
+            <span>Prev</span>
+          </button>
+        )}
+
         {onSkip && (
           <button
             type="button"
+            disabled={hasNext === false}
             onClick={() => {
               soundEngine.playMechanicalClick('toggle');
               onSkip();
             }}
-            className="px-2.5 py-1 rounded bg-[#181818] hover:bg-[#222222] border border-[#262626] text-[#888888] hover:text-white text-[11px] flex items-center gap-1 cursor-pointer"
+            className="px-2.5 py-1 rounded bg-[#181818] hover:bg-[#222222] border border-[#262626] text-[#888888] hover:text-white text-[11px] flex items-center gap-1 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             title="Next exercise"
           >
             <FastForward className="w-3 h-3" />

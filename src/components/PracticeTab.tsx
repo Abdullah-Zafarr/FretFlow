@@ -17,6 +17,7 @@ import {
   Pause,
   Hash,
   CheckCircle,
+  Rewind,
 } from 'lucide-react';
 import { usePractice } from '../context/usePractice';
 import { ChordText } from './ChordText';
@@ -24,6 +25,7 @@ import { TimerRing } from './TimerRing';
 import { Metronome } from './Metronome';
 import { VideoAssistant } from './VideoAssistant';
 import { soundEngine } from '../utils/audio';
+import { formatTime, parseTimeToSeconds } from '../utils/time';
 
 export const PracticeTab: React.FC = () => {
   const {
@@ -42,6 +44,7 @@ export const PracticeTab: React.FC = () => {
     selectActiveItem,
     markItemDone,
     repeatActiveItem,
+    prevItem,
     nextItem,
     resetRoutineDoneStatus,
     updateItemNotes,
@@ -60,6 +63,7 @@ export const PracticeTab: React.FC = () => {
   const [thingsDraft, setThingsDraft] = useState<string>('');
   const [showCompletionModal, setShowCompletionModal] = useState<boolean>(false);
   const [isFocusMode, setIsFocusMode] = useState<boolean>(false);
+  const [isEditingFocusTime, setIsEditingFocusTime] = useState<boolean>(false);
   const [scoreCountInput, setScoreCountInput] = useState<string>('');
 
   // Sync draft notes whenever active item changes
@@ -109,6 +113,8 @@ export const PracticeTab: React.FC = () => {
   // Find active entry index
   const activeEntryIndex = activeRoutine.entries.findIndex((e) => e.itemId === activeItemId);
   const isDoneThisSession = activeRoutine.entries.find((e) => e.itemId === activeItemId)?.doneThisSession;
+  const hasPrev = activeEntryIndex > 0;
+  const hasNext = activeEntryIndex >= 0 && activeEntryIndex < activeRoutine.entries.length - 1;
 
   const handleSaveNotes = () => {
     soundEngine.playMechanicalClick('toggle');
@@ -144,13 +150,6 @@ export const PracticeTab: React.FC = () => {
     soundEngine.playMechanicalClick('stomp');
     setShowCompletionModal(false);
     repeatActiveItem();
-  };
-
-  // Time format for focus mode
-  const formatTime = (secs: number) => {
-    const mins = Math.floor(secs / 60);
-    const remSecs = secs % 60;
-    return `${mins.toString().padStart(2, '0')}:${remSecs.toString().padStart(2, '0')}`;
   };
 
   return (
@@ -230,10 +229,25 @@ export const PracticeTab: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 bg-[#1c1c1c] text-amber-400 font-mono text-xs px-2.5 py-1 rounded border border-[#2a2a2a]">
+              <button
+                type="button"
+                onClick={() => {
+                  const currentFormatted = formatTime(timerSeconds);
+                  const userInput = window.prompt('Set exercise duration (e.g. 5:00, 10, 45s):', currentFormatted);
+                  if (userInput !== null) {
+                    const parsed = parseTimeToSeconds(userInput);
+                    if (parsed !== null && parsed >= 0) {
+                      soundEngine.playMechanicalClick('toggle');
+                      setTimerSeconds(parsed);
+                    }
+                  }
+                }}
+                className="flex items-center gap-1 bg-[#1c1c1c] text-amber-400 font-mono text-xs px-2.5 py-1 rounded border border-[#2a2a2a] hover:border-amber-500/50 hover:bg-[#222222] cursor-pointer transition-colors"
+                title="Click to edit duration"
+              >
                 <Clock className="w-3.5 h-3.5" />
                 {activeItemEntryMinutes} min
-              </span>
+              </button>
 
               {/* Focus Mode Button */}
               <button
@@ -262,8 +276,12 @@ export const PracticeTab: React.FC = () => {
                 onPause={pauseTimer}
                 onReset={resetTimer}
                 onMarkDoneFullTime={() => markItemDone(activeItem.id, true)}
+                onPrev={prevItem}
                 onSkip={nextItem}
+                hasPrev={hasPrev}
+                hasNext={hasNext}
                 onAdjustSeconds={handleAdjustTimer}
+                onSetSeconds={setTimerSeconds}
               />
             </div>
 
@@ -646,9 +664,52 @@ export const PracticeTab: React.FC = () => {
           </div>
 
           <div className="flex flex-col items-center justify-center text-center my-auto space-y-4">
-            <div className="text-8xl sm:text-9xl md:text-[10rem] font-mono font-medium tracking-tight text-white select-none">
-              {formatTime(timerSeconds)}
-            </div>
+            {isEditingFocusTime ? (
+              <div className="flex flex-col items-center">
+                <input
+                  type="text"
+                  autoFocus
+                  defaultValue={formatTime(timerSeconds)}
+                  onBlur={(e) => {
+                    const parsed = parseTimeToSeconds(e.target.value);
+                    if (parsed !== null && parsed >= 0) {
+                      soundEngine.playMechanicalClick('toggle');
+                      setTimerSeconds(parsed);
+                    }
+                    setIsEditingFocusTime(false);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      const parsed = parseTimeToSeconds(e.currentTarget.value);
+                      if (parsed !== null && parsed >= 0) {
+                        soundEngine.playMechanicalClick('toggle');
+                        setTimerSeconds(parsed);
+                      }
+                      setIsEditingFocusTime(false);
+                    } else if (e.key === 'Escape') {
+                      setIsEditingFocusTime(false);
+                    }
+                  }}
+                  className="text-7xl sm:text-8xl md:text-9xl font-mono text-center text-white bg-[#141414] border-2 border-amber-500 rounded-xl px-4 py-2 w-72 sm:w-96 outline-none shadow-xl shadow-amber-500/20"
+                />
+                <span className="text-xs font-mono text-amber-400 mt-2">
+                  Enter to save • Esc to cancel
+                </span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  if (isTimerRunning) pauseTimer();
+                  setIsEditingFocusTime(true);
+                }}
+                className="text-8xl sm:text-9xl md:text-[10rem] font-mono font-medium tracking-tight text-white select-none hover:text-amber-400 transition-colors cursor-pointer"
+                title="Click to edit time"
+              >
+                {formatTime(timerSeconds)}
+              </button>
+            )}
 
             {activeItem.thingsToRemember && (
               <p className="text-sm sm:text-base text-[#a3a3a3] max-w-lg m-0">
@@ -668,6 +729,20 @@ export const PracticeTab: React.FC = () => {
           </div>
 
           <div className="flex items-center justify-center gap-3 pt-4 border-t border-[#1f1f1f]">
+            <button
+              type="button"
+              disabled={!hasPrev}
+              onClick={() => {
+                soundEngine.playMechanicalClick('toggle');
+                prevItem();
+              }}
+              className="px-3.5 py-2.5 rounded-md bg-[#181818] border border-[#262626] text-[#a3a3a3] hover:text-white text-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="Previous exercise"
+            >
+              <Rewind className="w-3.5 h-3.5" />
+              <span>Prev</span>
+            </button>
+
             <button
               type="button"
               onClick={() => {
