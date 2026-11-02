@@ -23,7 +23,7 @@ export const AboutTab: React.FC = () => {
             “If you can’t play it cleanly and slowly with a metronome, you can’t play it fast. Practice doesn't make perfect—practice makes permanent.”
           </p>
           <span className="block text-xs font-mono text-neutral-500 mt-2">
-            — Justin Sandercoe (JustinGuitar)
+            — Justin Sandercoe (Guitar Practice Assistant)
           </span>
         </div>
       </div>

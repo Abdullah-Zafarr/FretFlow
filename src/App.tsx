@@ -21,11 +21,11 @@ export const AppContent: React.FC = () => {
       const mins = Math.floor(timerSeconds / 60);
       const secs = timerSeconds % 60;
       const formatted = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-      document.title = `[${formatted}] ${activeItem.name} — JustinGuitar`;
+      document.title = `[${formatted}] ${activeItem.name} — Guitar Practice Assistant`;
     } else if (timerSeconds === 0 && activeItem) {
-      document.title = `[COMPLETED] ${activeItem.name} — JustinGuitar`;
+      document.title = `[COMPLETED] ${activeItem.name} — Guitar Practice Assistant`;
     } else {
-      document.title = 'JustinGuitar — Practice Assistant';
+      document.title = 'Guitar Practice Assistant';
     }
   }, [isTimerRunning, timerSeconds, activeItem]);
 
@@ -61,7 +61,7 @@ export const AppContent: React.FC = () => {
       <footer className="border-t border-[#1f1f1f] py-4 text-xs text-[#737373]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="font-medium text-[#a3a3a3]">JustinGuitar Practice Assistant</span>
+            <span className="font-medium text-[#a3a3a3]">Guitar Practice Assistant</span>
             <span className="text-[#404040]">/</span>
             <span>Deliberate Practice</span>
           </div>

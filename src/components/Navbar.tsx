@@ -76,7 +76,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         };
       case 'about':
         return {
-          title: 'JustinGuitar Practice Philosophy',
+          title: 'Guitar Practice Philosophy',
           body: 'Deliberate practice guidelines based on Justin Sandercoe’s methodology: daily short sessions, internalizing rhythm, and tracking 1-minute chord changes.',
         };
     }
@@ -98,7 +98,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold tracking-tight text-white">
-                JustinGuitar
+                Guitar
               </span>
               <span className="text-xs text-[#666666] hidden sm:inline">
                 Practice Assistant
