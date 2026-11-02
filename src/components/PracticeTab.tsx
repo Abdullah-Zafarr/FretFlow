@@ -6,7 +6,6 @@ import {
   Edit3,
   Eye,
   EyeOff,
-  Video,
   Check,
   X,
   Play,
@@ -57,6 +56,7 @@ export const PracticeTab: React.FC = () => {
 
   // Local UI states
   const [showMetronome, setShowMetronome] = useState<boolean>(false);
+  const [showVideo, setShowVideo] = useState<boolean>(true);
   const [editingNotes, setEditingNotes] = useState<boolean>(false);
   const [notesDraft, setNotesDraft] = useState<string>('');
   const [editingThings, setEditingThings] = useState<boolean>(false);
@@ -305,11 +305,26 @@ export const PracticeTab: React.FC = () => {
                   <span>{showMetronome ? 'Hide Metronome' : 'Show Metronome'}</span>
                 </button>
 
-                {activeItem.videoUrl && (
-                  <span className="flex items-center gap-1 px-2.5 py-1 rounded text-xs text-[#d4d4d4] bg-[#1a1a1a] border border-[#262626]">
-                    <Video className="w-3.5 h-3.5 text-rose-400" />
-                    Video available
-                  </span>
+                {(activeItem.videoUrl || settings.alwaysPlayVideo) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      soundEngine.playMechanicalClick('toggle');
+                      setShowVideo(!showVideo);
+                    }}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                      showVideo
+                        ? 'bg-[#222222] text-rose-400 border-[#383838]'
+                        : 'bg-[#181818] text-[#888888] border-[#262626] hover:text-white'
+                    }`}
+                  >
+                    {showVideo ? (
+                      <EyeOff className="w-3.5 h-3.5 text-rose-400" />
+                    ) : (
+                      <Eye className="w-3.5 h-3.5 text-rose-400" />
+                    )}
+                    <span>{showVideo ? 'Hide Video' : 'Show Video'}</span>
+                  </button>
                 )}
               </div>
 
@@ -325,8 +340,8 @@ export const PracticeTab: React.FC = () => {
               )}
 
               {/* Video Assistant */}
-              {(settings.alwaysPlayVideo || activeItem.videoUrl) && (
-                <div>
+              {showVideo && (settings.alwaysPlayVideo || activeItem.videoUrl) && (
+                <div className="animate-in fade-in duration-100">
                   <VideoAssistant
                     videoUrl={activeItem.videoUrl}
                     onUpdateUrl={(url) =>
@@ -336,6 +351,10 @@ export const PracticeTab: React.FC = () => {
                         updatedAt: new Date().toISOString(),
                       })
                     }
+                    onToggleHide={() => {
+                      soundEngine.playMechanicalClick('toggle');
+                      setShowVideo(false);
+                    }}
                   />
                 </div>
               )}
