@@ -2,10 +2,6 @@
 
 > **FretFlow** is a modern, deliberate guitar practice web application inspired by and building upon JustinGuitar's Practice Assistant. Designed with an analog-studio aesthetic, tactile controls, and focused workflow to help guitarists structure routines, stay disciplined, and master their craft.
 
-<p align="center">
-  <img src="docs/screenshots/01-practice-player.png" alt="FretFlow Practice Player" width="100%" />
-</p>
-
 ---
 
 ## UI Gallery
@@ -23,10 +19,6 @@
 ### 1. Practice Player (`/practice`)
 
 Interactive practice runner with circular countdown timer, zero-latency synthesizer metronome, chord popups, and instant session logging.
-
-<p align="center">
-  <img src="docs/screenshots/01-practice-player.png" alt="FretFlow Practice Player" width="90%" />
-</p>
 
 - **Active Routine Runner:** Displays the current active routine (*"Rhythm and Timing mastery"*, 51 mins total across 14 items).
 - **Interactive Exercise Flow:**
@@ -56,10 +48,6 @@ Interactive practice runner with circular countdown timer, zero-latency synthesi
 
 Organize and switch active routines with side-by-side management and item-level duration overrides.
 
-<p align="center">
-  <img src="docs/screenshots/02-routines-manager.png" alt="FretFlow Routines Manager" width="90%" />
-</p>
-
 - **Single Active Routine Architecture:** Exactly one active routine running at a time.
 - **Side-by-Side View:** Current active routine on the left; inactive/saved routines on the right.
 - **One-Click Activation & Deletion:** Switch active routines instantly.
@@ -73,10 +61,6 @@ Organize and switch active routines with side-by-side management and item-level 
 
 Comprehensive drill repository with tagging, search, category filters, and duplication.
 
-<p align="center">
-  <img src="docs/screenshots/03-exercise-library.png" alt="FretFlow Exercise Library" width="90%" />
-</p>
-
 - **Active vs. Archived Items:** Keep your active drills clean while archiving retired drills without losing history.
 - **Search & Category Filters:** Filter by keyword or categories (*Technique, Chords, Rhythm, Songs, Warmup, Theory*).
 - **Full CRUD + Duplication:** Create, edit, duplicate variations, archive, restore, and permanently delete.
@@ -84,10 +68,6 @@ Comprehensive drill repository with tagging, search, category filters, and dupli
 ### 4. Practice Statistics & Analytics (`/stats`)
 
 Track practice consistency, streaks, daily goals, and drill breakdowns.
-
-<p align="center">
-  <img src="docs/screenshots/04-practice-stats.png" alt="FretFlow Statistics & Analytics" width="90%" />
-</p>
 
 - **Summary Statement:** Parity with deliberate practice metrics: *"From [Date] to [Date] you practiced — X hours Y mins across Z sessions"*.
 - **Interactive Daily Bar Chart:** Visual bar chart of minutes practiced per day (pre-seeded with demo data matching Oct 20–26).
