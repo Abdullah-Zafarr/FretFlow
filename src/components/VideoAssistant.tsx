@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Video, ExternalLink, Edit2, Check, X } from 'lucide-react';
+import { Video, ExternalLink, Edit2, Check, X, EyeOff } from 'lucide-react';
 
 interface VideoAssistantProps {
   videoUrl?: string;
   onUpdateUrl?: (url: string) => void;
+  onToggleHide?: () => void;
 }
 
-export const VideoAssistant: React.FC<VideoAssistantProps> = ({ videoUrl, onUpdateUrl }) => {
+export const VideoAssistant: React.FC<VideoAssistantProps> = ({ videoUrl, onUpdateUrl, onToggleHide }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [urlInput, setUrlInput] = useState(videoUrl || '');
 
@@ -66,6 +67,16 @@ export const VideoAssistant: React.FC<VideoAssistantProps> = ({ videoUrl, onUpda
               title="Change video URL"
             >
               <Edit2 className="w-3.5 h-3.5" />
+            </button>
+          )}
+          {onToggleHide && (
+            <button
+              type="button"
+              onClick={onToggleHide}
+              className="text-slate-400 hover:text-rose-400 p-1 cursor-pointer transition-colors"
+              title="Hide video"
+            >
+              <EyeOff className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
