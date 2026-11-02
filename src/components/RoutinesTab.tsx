@@ -147,14 +147,8 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
 
       {/* Featured Section: Active Routine Hero Card */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 m-0">
-              Active Routine
-            </h3>
-          </div>
-          {activeRoutine && (
+        {activeRoutine && (
+          <div className="flex items-center justify-end">
             <button
               type="button"
               onClick={() => {
@@ -166,8 +160,8 @@ export const RoutinesTab: React.FC<RoutinesTabProps> = ({ onSwitchToPractice }) 
               <span>{showActiveExercises ? 'Collapse Exercises' : `View ${activeRoutine.entries.length} Exercises`}</span>
               {showActiveExercises ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {activeRoutine ? (
           <div className="bg-[#141414] border border-[#2a2a2a] hover:border-[#383838] rounded-xl p-5 sm:p-7 space-y-6 shadow-sm transition-all">
