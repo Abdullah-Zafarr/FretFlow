@@ -180,10 +180,26 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setTimerSecondsCustom = useCallback((secs: number) => {
     const clamped = Math.max(0, secs);
     setTimerSeconds(clamped);
+    setTimerTotalSeconds(clamped);
     if (isTimerRunning) {
       targetEndTimeRef.current = Date.now() + clamped * 1000;
     }
-  }, [isTimerRunning]);
+    // Sync active routine entry minutes if valid time
+    if (activeRoutine && activeItemId && clamped >= 30) {
+      const minutes = Math.max(1, Math.round(clamped / 60));
+      setRoutines((prev) =>
+        prev.map((r) => {
+          if (r.id !== activeRoutine.id) return r;
+          return {
+            ...r,
+            entries: r.entries.map((e) =>
+              e.itemId === activeItemId ? { ...e, minutes } : e
+            ),
+          };
+        })
+      );
+    }
+  }, [isTimerRunning, activeRoutine, activeItemId]);
 
   const selectActiveItem = useCallback((itemId: string) => {
     setActiveItemId(itemId);
@@ -257,6 +273,14 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     resetTimer();
     startTimer();
   }, [resetTimer, startTimer]);
+
+  const prevItem = useCallback(() => {
+    if (!activeRoutine || !activeItemId) return;
+    const currentIndex = activeRoutine.entries.findIndex((e) => e.itemId === activeItemId);
+    if (currentIndex > 0) {
+      setActiveItemId(activeRoutine.entries[currentIndex - 1].itemId);
+    }
+  }, [activeRoutine, activeItemId]);
 
   const nextItem = useCallback(() => {
     if (!activeRoutine || !activeItemId) return;
@@ -455,6 +479,7 @@ export const PracticeProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     selectActiveItem,
     markItemDone,
     repeatActiveItem,
+    prevItem,
     nextItem,
     resetRoutineDoneStatus,
     updateItemNotes,

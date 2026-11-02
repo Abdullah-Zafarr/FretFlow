@@ -24,6 +24,7 @@ export interface PracticeContextType {
   selectActiveItem: (itemId: string) => void;
   markItemDone: (itemId: string, logFullTime?: boolean, actualMinutes?: number, scoreCount?: number) => void;
   repeatActiveItem: () => void;
+  prevItem: () => void;
   nextItem: () => void;
   resetRoutineDoneStatus: (routineId?: string) => void;
   updateItemNotes: (itemId: string, notes: string) => void;
