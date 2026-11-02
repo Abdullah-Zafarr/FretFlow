@@ -206,24 +206,24 @@ export const PracticeTab: React.FC = () => {
 
       {/* Active Exercise Card */}
       {activeItem ? (
-        <div className="bg-[#141414] border border-[#262626] rounded-lg p-5 sm:p-6 space-y-5">
+        <div className="bg-[#141414] border border-[#262626] rounded-lg p-3.5 sm:p-4 space-y-3">
           {/* Item Header */}
-          <div className="flex flex-wrap items-start justify-between gap-3 pb-4 border-b border-[#222222]">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#222222]">
             <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-5 h-5 rounded bg-[#202020] text-[#a3a3a3] font-mono text-[11px] flex items-center justify-center">
+              <div className="flex items-center gap-1.5 mb-0.5">
+                <span className="w-4.5 h-4.5 rounded bg-[#202020] text-[#a3a3a3] font-mono text-[10px] flex items-center justify-center">
                   {activeEntryIndex >= 0 ? activeEntryIndex + 1 : '•'}
                 </span>
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#737373]">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#737373]">
                   {activeItem.category || 'Exercise'}
                 </span>
                 {isDoneThisSession && (
-                  <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-400 bg-[#122417] border border-[#1d3d27] px-2 py-0.5 rounded">
-                    <CheckCircle className="w-3 h-3" /> Done
+                  <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400 bg-[#122417] border border-[#1d3d27] px-1.5 py-0.2 rounded">
+                    <CheckCircle className="w-2.5 h-2.5" /> Done
                   </span>
                 )}
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-white m-0">
+              <h2 className="text-lg sm:text-xl font-bold text-white m-0">
                 <ChordText text={activeItem.name} />
               </h2>
             </div>
@@ -242,10 +242,10 @@ export const PracticeTab: React.FC = () => {
                     }
                   }
                 }}
-                className="flex items-center gap-1 bg-[#1c1c1c] text-amber-400 font-mono text-xs px-2.5 py-1 rounded border border-[#2a2a2a] hover:border-amber-500/50 hover:bg-[#222222] cursor-pointer transition-colors"
+                className="flex items-center gap-1 bg-[#1c1c1c] text-amber-400 font-mono text-xs px-2 py-0.5 rounded border border-[#2a2a2a] hover:border-amber-500/50 hover:bg-[#222222] cursor-pointer transition-colors"
                 title="Click to edit duration"
               >
-                <Clock className="w-3.5 h-3.5" />
+                <Clock className="w-3 h-3" />
                 {activeItemEntryMinutes} min
               </button>
 
@@ -256,16 +256,16 @@ export const PracticeTab: React.FC = () => {
                   soundEngine.playMechanicalClick('toggle');
                   setIsFocusMode(true);
                 }}
-                className="p-1.5 rounded-md bg-[#1a1a1a] hover:bg-[#262626] text-[#888888] hover:text-white border border-[#262626] transition-colors cursor-pointer"
+                className="p-1 rounded-md bg-[#1a1a1a] hover:bg-[#262626] text-[#888888] hover:text-white border border-[#262626] transition-colors cursor-pointer"
                 title="Fullscreen focus mode"
               >
-                <Maximize2 className="w-4 h-4" />
+                <Maximize2 className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
           {/* Central Grid: Timer + Tools */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
             {/* Minimalist Countdown Timer */}
             <div className="lg:col-span-5 flex justify-center">
               <TimerRing
@@ -286,7 +286,7 @@ export const PracticeTab: React.FC = () => {
             </div>
 
             {/* Right side tools */}
-            <div className="lg:col-span-7 space-y-4">
+            <div className="lg:col-span-7 space-y-2.5">
               {/* Metronome & Video Toggles */}
               <div className="flex items-center gap-2">
                 <button
@@ -295,7 +295,7 @@ export const PracticeTab: React.FC = () => {
                     soundEngine.playMechanicalClick('toggle');
                     setShowMetronome(!showMetronome);
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
                     showMetronome
                       ? 'bg-[#222222] text-amber-400 border-[#383838]'
                       : 'bg-[#181818] text-[#888888] border-[#262626] hover:text-white'
@@ -312,7 +312,7 @@ export const PracticeTab: React.FC = () => {
                       soundEngine.playMechanicalClick('toggle');
                       setShowVideo(!showVideo);
                     }}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium border transition-colors cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium border transition-colors cursor-pointer ${
                       showVideo
                         ? 'bg-[#222222] text-rose-400 border-[#383838]'
                         : 'bg-[#181818] text-[#888888] border-[#262626] hover:text-white'
@@ -359,118 +359,121 @@ export const PracticeTab: React.FC = () => {
                 </div>
               )}
 
-              {/* Personal Notes */}
-              <div className="bg-[#181818] border border-[#242424] rounded-md p-3.5">
-                <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-[#202020]">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-[#737373]">
-                    Notes
-                  </span>
-                  {!editingNotes ? (
-                    <button
-                      type="button"
-                      onClick={() => setEditingNotes(true)}
-                      className="text-[#737373] hover:text-amber-400 p-0.5 cursor-pointer"
-                      title="Edit Notes"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-1">
+              {/* Side-by-side Notes & Key Reminders */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* Personal Notes */}
+                <div className="bg-[#181818] border border-[#242424] rounded-md p-2.5">
+                  <div className="flex items-center justify-between mb-1 pb-1 border-b border-[#202020]">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#737373]">
+                      Notes
+                    </span>
+                    {!editingNotes ? (
                       <button
                         type="button"
-                        onClick={handleSaveNotes}
-                        className="text-emerald-400 hover:text-emerald-300 p-0.5 cursor-pointer"
-                        title="Save Notes"
+                        onClick={() => setEditingNotes(true)}
+                        className="text-[#737373] hover:text-amber-400 p-0.5 cursor-pointer"
+                        title="Edit Notes"
                       >
-                        <Check className="w-3.5 h-3.5" />
+                        <Edit3 className="w-3 h-3" />
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNotesDraft(activeItem.notes || '');
-                          setEditingNotes(false);
-                        }}
-                        className="text-[#737373] hover:text-white p-0.5 cursor-pointer"
-                        title="Cancel"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {editingNotes ? (
-                  <textarea
-                    value={notesDraft}
-                    onChange={(e) => setNotesDraft(e.target.value)}
-                    rows={2}
-                    className="w-full bg-[#111111] border border-[#2e2e2e] rounded p-2 text-xs text-white focus:outline-none focus:border-amber-400"
-                    placeholder="Add practice notes..."
-                  />
-                ) : (
-                  <p className="text-xs text-[#a3a3a3] leading-relaxed m-0">
-                    {activeItem.notes ? activeItem.notes : <span className="text-[#525252] italic">No notes yet. Click the pencil icon to add notes.</span>}
-                  </p>
-                )}
-              </div>
-
-              {/* Things to Remember (Key Cues) */}
-              <div className="bg-[#181818] border border-[#242424] rounded-md p-3.5">
-                <div className="flex items-center justify-between mb-1.5 pb-1 border-b border-[#202020]">
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-amber-400">
-                    Key Reminders
-                  </span>
-                  {!editingThings ? (
-                    <button
-                      type="button"
-                      onClick={() => setEditingThings(true)}
-                      className="text-[#737373] hover:text-amber-400 p-0.5 cursor-pointer"
-                      title="Edit Reminders"
-                    >
-                      <Edit3 className="w-3.5 h-3.5" />
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={handleSaveThings}
-                        className="text-emerald-400 hover:text-emerald-300 p-0.5 cursor-pointer"
-                        title="Save Cues"
-                      >
-                        <Check className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setThingsDraft(activeItem.thingsToRemember || '');
-                          setEditingThings(false);
-                        }}
-                        className="text-[#737373] hover:text-white p-0.5 cursor-pointer"
-                        title="Cancel"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {editingThings ? (
-                  <textarea
-                    value={thingsDraft}
-                    onChange={(e) => setThingsDraft(e.target.value)}
-                    rows={2}
-                    className="w-full bg-[#111111] border border-[#2e2e2e] rounded p-2 text-xs text-amber-200 focus:outline-none focus:border-amber-400"
-                    placeholder="Add key practice reminders..."
-                  />
-                ) : (
-                  <p className="text-xs text-[#d4d4d4] leading-relaxed m-0">
-                    {activeItem.thingsToRemember ? (
-                      `“${activeItem.thingsToRemember}”`
                     ) : (
-                      <span className="text-[#525252] italic">No reminders added.</span>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={handleSaveNotes}
+                          className="text-emerald-400 hover:text-emerald-300 p-0.5 cursor-pointer"
+                          title="Save Notes"
+                        >
+                          <Check className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setNotesDraft(activeItem.notes || '');
+                            setEditingNotes(false);
+                          }}
+                          className="text-[#737373] hover:text-white p-0.5 cursor-pointer"
+                          title="Cancel"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
                     )}
-                  </p>
-                )}
+                  </div>
+
+                  {editingNotes ? (
+                    <textarea
+                      value={notesDraft}
+                      onChange={(e) => setNotesDraft(e.target.value)}
+                      rows={2}
+                      className="w-full bg-[#111111] border border-[#2e2e2e] rounded p-1.5 text-xs text-white focus:outline-none focus:border-amber-400"
+                      placeholder="Add practice notes..."
+                    />
+                  ) : (
+                    <p className="text-[11px] text-[#a3a3a3] leading-relaxed m-0">
+                      {activeItem.notes ? activeItem.notes : <span className="text-[#525252] italic">No notes yet. Click pencil to add.</span>}
+                    </p>
+                  )}
+                </div>
+
+                {/* Things to Remember (Key Cues) */}
+                <div className="bg-[#181818] border border-[#242424] rounded-md p-2.5">
+                  <div className="flex items-center justify-between mb-1 pb-1 border-b border-[#202020]">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400">
+                      Key Reminders
+                    </span>
+                    {!editingThings ? (
+                      <button
+                        type="button"
+                        onClick={() => setEditingThings(true)}
+                        className="text-[#737373] hover:text-amber-400 p-0.5 cursor-pointer"
+                        title="Edit Reminders"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={handleSaveThings}
+                          className="text-emerald-400 hover:text-emerald-300 p-0.5 cursor-pointer"
+                          title="Save Cues"
+                        >
+                          <Check className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setThingsDraft(activeItem.thingsToRemember || '');
+                            setEditingThings(false);
+                          }}
+                          className="text-[#737373] hover:text-white p-0.5 cursor-pointer"
+                          title="Cancel"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {editingThings ? (
+                    <textarea
+                      value={thingsDraft}
+                      onChange={(e) => setThingsDraft(e.target.value)}
+                      rows={2}
+                      className="w-full bg-[#111111] border border-[#2e2e2e] rounded p-1.5 text-xs text-amber-200 focus:outline-none focus:border-amber-400"
+                      placeholder="Add key practice reminders..."
+                    />
+                  ) : (
+                    <p className="text-[11px] text-[#d4d4d4] leading-relaxed m-0">
+                      {activeItem.thingsToRemember ? (
+                        `“${activeItem.thingsToRemember}”`
+                      ) : (
+                        <span className="text-[#525252] italic">No reminders added.</span>
+                      )}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
