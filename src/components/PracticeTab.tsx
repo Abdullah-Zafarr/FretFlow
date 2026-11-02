@@ -56,7 +56,7 @@ export const PracticeTab: React.FC = () => {
 
   // Local UI states
   const [showMetronome, setShowMetronome] = useState<boolean>(false);
-  const [showVideo, setShowVideo] = useState<boolean>(true);
+  const [showVideo, setShowVideo] = useState<boolean>(false);
   const [editingNotes, setEditingNotes] = useState<boolean>(false);
   const [notesDraft, setNotesDraft] = useState<string>('');
   const [editingThings, setEditingThings] = useState<boolean>(false);
@@ -66,7 +66,7 @@ export const PracticeTab: React.FC = () => {
   const [isEditingFocusTime, setIsEditingFocusTime] = useState<boolean>(false);
   const [scoreCountInput, setScoreCountInput] = useState<string>('');
 
-  // Sync draft notes whenever active item changes
+  // Sync draft notes & video visibility whenever active item changes
   useEffect(() => {
     if (activeItem) {
       setNotesDraft(activeItem.notes || '');
@@ -74,8 +74,9 @@ export const PracticeTab: React.FC = () => {
       setEditingNotes(false);
       setEditingThings(false);
       setScoreCountInput('');
+      setShowVideo(Boolean(settings.alwaysPlayVideo));
     }
-  }, [activeItem]);
+  }, [activeItem, settings.alwaysPlayVideo]);
 
   // Handle ESC key to exit focus mode
   useEffect(() => {
